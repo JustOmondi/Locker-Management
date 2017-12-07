@@ -42,7 +42,7 @@
 
       <div class="row center">
       	<div class = "col s12 m6 l2 offset-l5 offset-m3">
-      		<a id="lock-fab" class="btn-floating btn-large red" onclick="changeLockState()"><i id="lock-icon" class="material-icons">lock_open</i></a>
+      		<a id="lock-fab" class="btn-floating btn-large green" onclick="changeLockState()"><i id="lock-icon" class="material-icons">lock_open</i></a>
       	</div>
       </div>
 
@@ -55,23 +55,41 @@
   </div>
 
   <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script src="js/materialize.js"></script>
-  <script src="js/init.js"></script>
-  <script>
+	<script src="https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
+	<script>
+	  // Initialize Firebase
+	  var config = {
+	    apiKey: "AIzaSyA-rpI8Y86okxMRsysGvAvrB420H7cs5YY",
+	    authDomain: "locker-management-1be92.firebaseapp.com",
+	    databaseURL: "https://locker-management-1be92.firebaseio.com",
+	    projectId: "locker-management-1be92",
+	    storageBucket: "locker-management-1be92.appspot.com",
+	    messagingSenderId: "484082976169"
+	  };
+	  firebase.initializeApp(config);
+	</script>
+	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="js/materialize.js"></script>
+	<script src="js/init.js"></script>
+	<script>
   	//possibly make this into a seperate file
 	function changeLockState()
 	{
 		var text = document.getElementById("lock-text");
 		var img = document.getElementById("lock-icon");
+		var btn = $("#lock-fab");
 		if(text.innerHTML == "Locked")
 		{
+			btn.removeClass("red");
+			btn.addClass("green");
 			text.innerHTML="Unlocked";
 			img.innerHTML="lock_open";
 			// communicate with firebase here
 		}
 		else if(text.innerHTML=="Unlocked")
 		{
+			btn.removeClass("green");
+			btn.addClass("red");
 			text.innerHTML="Locked";
 			img.innerHTML="lock_outline";
 			// communicate with firebase here
