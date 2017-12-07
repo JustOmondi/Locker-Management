@@ -32,11 +32,11 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
         lockStatus = snapshot.val().lockStatus;
     });
 
-    if(lockStatus == "0")
+    if(lockStatus == 0)
     {
         alert("Unlocked");
     }
-    else if (lockStatus == "1")
+    else if (lockStatus == 1)
     {
         alert("Locked");
     }
@@ -47,21 +47,21 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
 
     locker.lockUnlock = function ()
     {
-        if(lockStatus == "1")
+        if(lockStatus == 1)
         {
             // Unlock
             database.ref('lock').set(
                 {
-                    lockStatus: "0"
+                    lockStatus: 0
                 }
             );
         }
-        else if(lockStatus == "0")
+        else if(lockStatus == 0)
         {
             // Lock
             database.ref('lock').set(
                 {
-                    lockStatus: "1"
+                    lockStatus: 1
                 }
             );
         }
