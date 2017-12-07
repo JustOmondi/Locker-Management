@@ -57,14 +57,11 @@
         <h5 id="lock-description" class="header col s12 light">Unlock and Lock your locker remotely with ease</h5>
       </div>
 
+		<!--Lock button-->
       <div class="row center" ng-controller="lockController">
-      	<div class = "col s12 m6 l2 offset-l5 offset-m3">
-      		<a id="lock-fab" class="btn-floating btn-large green" onclick="changeLockState()" ng-click="lockUnlock()"><i id="lock-icon" class="material-icons">lock_open</i></a>
+      	<div class = "col s12 m6 l12 offset-m3">
+      		<a id="lock-fab" class="btn grey" ng-click="lockUnlock()"><i id=lock-icon class="material-icons left">loop</i> Loading</a>
       	</div>
-      </div>
-
-      <div class="row center">
-        <h5 id="lock-text" href="#!" class="header col s12 light">Unlocked</h5>
       </div>
       <br><br>
 
@@ -75,30 +72,5 @@
 
 	<script src="js/materialize.js"></script>
 	<script src="js/init.js"></script>
-	<script>
-  	//possibly make this into a seperate file
-	function changeLockState()
-	{
-		var text = document.getElementById("lock-text");
-		var img = document.getElementById("lock-icon");
-		var btn = $("#lock-fab");
-		if(text.innerHTML == "Locked")
-		{
-			btn.removeClass("red");
-			btn.addClass("green");
-			text.innerHTML="Unlocked";
-			img.innerHTML="lock_open";
-			// communicate with firebase here
-		}
-		else if(text.innerHTML=="Unlocked")
-		{
-			btn.removeClass("green");
-			btn.addClass("red");
-			text.innerHTML="Locked";
-			img.innerHTML="lock_outline";
-			// communicate with firebase here
-		}
-	}
-  </script>
   </body>
 </html>
