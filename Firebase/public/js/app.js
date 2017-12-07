@@ -26,29 +26,49 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
 
     var database = firebaseApp.database();
 
-    // Get current lock status from database
-    database.ref('lock').once('value').then(function(snapshot)
+    database.ref('lock').on('value', function(snapshot)
     {
+        console.log(snapshot.val());
         lockStatus = snapshot.val().lockStatus;
-        // alert("Pulled Lock status = "+lockStatus);
+        console.log("Lock status ="+lockStatus);
+        // alert("Lock status = "+lockStatus);
     });
+
+    // // Get current lock status from database
+    // database.ref('lock').once('value').then(function(snapshot)
+    // {
+    //     lockStatus = snapshot.val().lockStatus;
+    //     alert("Pulled Lock status = "+lockStatus);
+    // });
 
 
     var lockButton = $('#lock-fab');
+    var lockIcon = $('#lock-icon');
+
+    // var lockedContent = "<i class=\"material-icons left\">locked</i>lock_outline</i>";
+
 
     // Wait for lockStatus to be fetched from database before doing anything that depends on its value
     setTimeout(function()
     {
-
+        // alert("Lock status outside = "+lockStatus);
+        // Locked
         if(lockStatus == 1)
         {
+            // lockButton.empty();
+
             lockButton.removeClass('grey');
             lockButton.addClass('red');
+            lockButton.text('Lock');
+            lockIcon.html("lock_outline")
         }
+        // Unlocked
         else if (lockStatus == 0)
         {
             lockButton.removeClass('grey');
             lockButton.addClass('green');
+            lockButton.text('Unlock');
+            lockIcon.html("lock_open")
         }
 
     }, 2000);
@@ -68,7 +88,11 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
                     lockStatus: 0
                 }
             );
-            locker.updateLockStatus();
+            lockButton.removeClass('red');
+            lockButton.addClass('green');
+            lockButton.text('Unlock');
+            lockIcon.html("lock_open")
+            // locker.updateLockStatus();
         }
         else if(lockStatus == 0)
         {
@@ -78,7 +102,11 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
                     lockStatus: 1
                 }
             );
-            locker.updateLockStatus();
+            lockButton.removeClass('green');
+            lockButton.addClass('red');
+            lockButton.text('Lock');
+            lockIcon.html("lock_outline")
+            // locker.updateLockStatus();
 
         }
     };
