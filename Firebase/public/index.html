@@ -10,6 +10,9 @@
 	<link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 	<link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	
+	<!-- JQuery -->
+	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 
 	<!-- Angular -->
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
@@ -40,9 +43,9 @@
         <h5 id="lock-description" class="header col s12 light">Unlock and Lock your locker remotely with ease</h5>
       </div>
 
-      <div class="row center">
+      <div class="row center" ng-controller="lockController">
       	<div class = "col s12 m6 l2 offset-l5 offset-m3">
-      		<a id="lock-fab" class="btn-floating btn-large green" onclick="changeLockState()"><i id="lock-icon" class="material-icons">lock_open</i></a>
+      		<a id="lock-fab" class="btn-floating btn-large green" onclick="changeLockState()" ng-click="lockUnlock()"><i id="lock-icon" class="material-icons">lock_open</i></a>
       	</div>
       </div>
 
@@ -55,20 +58,16 @@
   </div>
 
   <!--  Scripts-->
+
+	<!-- Firebase -->
 	<script src="https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
-	<script>
-	  // Initialize Firebase
-	  var config = {
-	    apiKey: "AIzaSyA-rpI8Y86okxMRsysGvAvrB420H7cs5YY",
-	    authDomain: "locker-management-1be92.firebaseapp.com",
-	    databaseURL: "https://locker-management-1be92.firebaseio.com",
-	    projectId: "locker-management-1be92",
-	    storageBucket: "locker-management-1be92.appspot.com",
-	    messagingSenderId: "484082976169"
-	  };
-	  firebase.initializeApp(config);
-	</script>
-	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-messaging.js"></script>
+
 	<script src="js/materialize.js"></script>
 	<script src="js/init.js"></script>
 	<script>
