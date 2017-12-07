@@ -57,14 +57,15 @@
         <h5 id="lock-description" class="header col s12 light">Unlock and Lock your locker remotely with ease</h5>
       </div>
 
+		<!--Lock button-->
       <div class="row center" ng-controller="lockController">
       	<div class = "col s12 m6 l2 offset-l5 offset-m3">
-      		<a id="lock-fab" class="btn-floating btn-large green" onclick="changeLockState()" ng-click="lockUnlock()"><i id="lock-icon" class="material-icons">lock_open</i></a>
+      		<a id="lock-fab" class="btn-floating btn-large grey" onclick="changeLockState()" ng-click="lockUnlock()"><i id="lock-icon" class="material-icons">lock_open</i></a>
       	</div>
       </div>
 
       <div class="row center">
-        <h5 id="lock-text" href="#!" class="header col s12 light">Unlocked</h5>
+        <h5 id="lock-text" href="#!" class="header col s12 light">Loading ...</h5>
       </div>
       <br><br>
 

@@ -3,7 +3,7 @@ var app = angular.module("PiLock", ["firebase"]);
 function lockController($scope, $firebaseObject, $firebaseAuth)
 {
     var locker = $scope;
-    var lockStatus = 23;
+    var lockStatus = -1;
 
     // Firebase config
     var config =
@@ -30,27 +30,33 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
     database.ref('lock').once('value').then(function(snapshot)
     {
         lockStatus = snapshot.val().lockStatus;
+        // alert("Pulled Lock status = "+lockStatus);
     });
 
-    if(lockStatus == 0)
+
+    var lockButton = $('#lock-fab');
+
+    // Wait for lockStatus to be fetched from database before doing anything that depends on its value
+    setTimeout(function()
     {
-        alert("Unlocked");
-    }
-    else if (lockStatus == 1)
-    {
-        alert("Locked");
-    }
+
+        if(lockStatus == 1)
+        {
+            lockButton.removeClass('grey');
+            lockButton.addClass('red');
+        }
+        else if (lockStatus == 0)
+        {
+            lockButton.removeClass('grey');
+            lockButton.addClass('green');
+        }
+
+    }, 2000);
+
 
 
     var lock_url = "https://us-central1-locker-management-1be92.cloudfunctions.net/lock";
     var unlock_url = "https://us-central1-locker-management-1be92.cloudfunctions.net/unlock";
-
-    locker.updateLockStatus = function ()
-    {
-        database.ref('lock').once('value').then(function (snapshot) {
-            lockStatus = snapshot.val().lockStatus;
-        });
-    };
 
     locker.lockUnlock = function ()
     {
@@ -75,7 +81,14 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
             locker.updateLockStatus();
 
         }
-    }
+    };
+
+    locker.updateLockStatus = function ()
+    {
+        database.ref('lock').once('value').then(function (snapshot) {
+            lockStatus = snapshot.val().lockStatus;
+        });
+    };
 }
 
 function LogController($scope)
