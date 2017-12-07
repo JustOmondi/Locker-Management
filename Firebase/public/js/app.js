@@ -45,6 +45,13 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
     var lock_url = "https://us-central1-locker-management-1be92.cloudfunctions.net/lock";
     var unlock_url = "https://us-central1-locker-management-1be92.cloudfunctions.net/unlock";
 
+    locker.updateLockStatus = function ()
+    {
+        database.ref('lock').once('value').then(function (snapshot) {
+            lockStatus = snapshot.val().lockStatus;
+        });
+    };
+
     locker.lockUnlock = function ()
     {
         if(lockStatus == 1)
@@ -55,6 +62,7 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
                     lockStatus: 0
                 }
             );
+            locker.updateLockStatus();
         }
         else if(lockStatus == 0)
         {
@@ -64,6 +72,8 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
                     lockStatus: 1
                 }
             );
+            locker.updateLockStatus();
+
         }
     }
 }
