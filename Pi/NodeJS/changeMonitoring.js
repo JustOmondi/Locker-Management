@@ -1,7 +1,11 @@
+// Variables for shell execution
+var shell = require('shelljs');
+var pythonLockCode = './header.py 1';
+var pythonUnlockCode = './header.py 0';
+
+// Authenticating into firebase database
 var admin = require("firebase-admin");
-
-var serviceAccount = require("/home/alienadmin/firebase_nodejs/serviceAccountKey.json");
-
+var serviceAccount = require("/home/pi/piServer/serviceAccountKey.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://locker-management-1be92.firebaseio.com"
@@ -17,32 +21,28 @@ var ref = db.ref("/");
 // Get the data on a post that has changed
 ref.on("child_changed", function(snap) {
   var changedLock = snap.val();
-//  console.log("The updated lock status is " + changedLock.lockstatus);
-  reactOnLockState(changedLock.lockstatus);
+//  console.log("The updated lock status is " + changedLock.lockStatus);
+
+  if (changedLock.lockStatus == 0) {
+    if (shell.exec(pythonUnlockCode).code !== 0) {
+      console.log("Unlock script error.");
+    }
+    //setTimeout(setLockOn(changedLock), changedLock.time_out * 1000);
+  } else if (changedLock.lockStatus == 1) {
+    if (shell.exec(pythonLockCode).code !== 0) {
+      console.log("Lock script error.");
+    }
+  }
 });
 
-var shell = require('shelljs');
-var pythonLockCode = 'python lock.py'
-var pythonUnlockCode = 'python unlock.py'
-
-function reactOnLockState(lockState) {
-    if (lockState == 0) {
-	    if (shell.exec(pythonUnlockCode).code !== 0) {
-            shell.exit(1);
-        }
-        console.log("Unlocking Lock");
-    } else {
-        if (shell.exec(pythonLockCode).code !== 0) {
-            shell.exit(1);
-        }
-        console.log("Locking Lock");
-    }            // The function returns the product of p1 and p2
+//Faulty reference edit
+function setLockOn(ref) {
+  ref.child('lockStatus').set(1);
 }
 
 //var newLock = "autoCreatedLock";
-//ref.child('testLock').set('-100')
+
 
 //console.log(ref)
 
 console.log("Reached script end");
-

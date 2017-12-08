@@ -59,16 +59,20 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
 
             lockButton.removeClass('grey');
             lockButton.addClass('red');
-            lockButton.text('Lock');
-            lockIcon.html("lock_outline")
+            lockButton.html('Lock');
+            lockIcon.html("lock_outline");
+            var str = lockButton.clone().wrap('<div/>').parent().html();
+            console.log("html is: " + str);
         }
         // Unlocked
         else if (lockStatus == 0)
         {
             lockButton.removeClass('grey');
             lockButton.addClass('green');
-            lockButton.text('Unlock');
-            lockIcon.html("lock_open")
+            lockButton.html('Unlock');
+            lockIcon.html("lock_open");
+            var str = lockButton.clone().wrap('<div/>').parent().html();
+            console.log("html is: " + str);
         }
 
     }, 2000);
@@ -78,34 +82,34 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
     var lock_url = "https://us-central1-locker-management-1be92.cloudfunctions.net/lock";
     var unlock_url = "https://us-central1-locker-management-1be92.cloudfunctions.net/unlock";
 
+    // Update lock status
     locker.lockUnlock = function ()
     {
+        var updates = {};
         if(lockStatus == 1)
         {
-            // Unlock
-            database.ref('lock').set(
-                {
-                    lockStatus: 0
-                }
-            );
+            //Add changes to update list and push to database
+            updates["/lockStatus"] = 0;
+            database.ref('lock').update(updates);
+
+            //UI changes
             lockButton.removeClass('red');
             lockButton.addClass('green');
             lockButton.text('Unlock');
-            lockIcon.html("lock_open")
+            console.log("lalal " + lockIcon.html());
             // locker.updateLockStatus();
         }
         else if(lockStatus == 0)
         {
-            // Lock
-            database.ref('lock').set(
-                {
-                    lockStatus: 1
-                }
-            );
+            //Lock
+            updates["/lockStatus"] = 1;
+            database.ref('lock').update(updates);
+
+            //UI changes
             lockButton.removeClass('green');
             lockButton.addClass('red');
             lockButton.text('Lock');
-            lockIcon.html("lock_outline")
+            console.log("old html = " + lockButton.html());
             // locker.updateLockStatus();
 
         }
