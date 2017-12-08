@@ -2,11 +2,12 @@
 
 var app = angular.module("PiLock", ["firebase"]);
 
-//Changing the status of the lock, and pulling information
-function lockController($scope, $firebaseObject, $firebaseAuth)
+function lockController($scope)
 {
     var locker = $scope;
     var lockStatus = -1;//initially -1 as we still need to get the current status from Firebase
+
+    locker.buttonIcon = "";
 
     // Firebase config
     var config =
@@ -37,9 +38,11 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
         // alert("Lock status = "+lockStatus);
     });
 
+
     var lockButton = $('#lock-fab');
     var lockIcon = $('#lock-icon');
-    var lock_status_text = $("#lock-status-text")
+    var lock_status_text = $("#lock-status-text");
+
 
     // Wait for lockStatus to be fetched from database before doing anything that depends on its value
     setTimeout(function()
@@ -67,12 +70,8 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
             lock_status_text.html("Your locker is locked");
         }
 
-    }, 2000);
+    }, 2000); // Duration = 2000 milliseconds = 2 seconds
 
-
-
-    var lock_url = "https://us-central1-locker-management-1be92.cloudfunctions.net/lock";
-    var unlock_url = "https://us-central1-locker-management-1be92.cloudfunctions.net/unlock";
 
     // Update lock status
     locker.lockUnlock = function ()
