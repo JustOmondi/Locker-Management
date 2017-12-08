@@ -37,7 +37,12 @@ ref.on("child_changed", function(snap) {
 
 //Faulty reference edit
 function setLockOn(ref) {
-  ref.child('lockStatus').set(1);
+  var updates = {};
+  //Add changes to update list and push to database
+  updates["/lockStatus"] = 1;
+  database.ref('lock').update(updates);
+  
+  // ref.child('lockStatus').set(1);
 }
 
 //var newLock = "autoCreatedLock";

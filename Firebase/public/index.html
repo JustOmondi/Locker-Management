@@ -34,16 +34,13 @@
 
 <body ng-app = "PiLock">
 	<!-- Nav bar -->
-	<nav class="light-blue lighten-1" role="navigation">
-		<div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Pi-Locker</a>
-		  <ul class="right hide-on-med-and-down">
-		    <li><a href="https://bitbucket.org/AdamKaliski/locker-management">Bitbucket Link</a></li>
-		  </ul>
-
-		  <ul id="nav-mobile" class="side-nav">
-		    <li><a href="#">Navbar Link</a></li>
-		  </ul>
-		  <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+	<nav class="orange darken-2" role="navigation">
+		<div class="nav-wrapper container">
+			<a id="logo-container" href="#" class="brand-logo center">Pi-Locker</a>
+			<ul id="nav-mobile" class="side-nav">
+				<li><a href="#">Navbar Link</a></li>
+			</ul>
+			<a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
 		</div>
 	</nav>
 
@@ -60,7 +57,16 @@
 		<!--Lock button-->
       <div class="row center" ng-controller="lockController">
       	<div class = "col s12 m6 l12 offset-m3">
-      		<a id="lock-fab" class="btn btn-large grey" ng-click="lockUnlock()"><i id=lock-icon class="tiny material-icons left">loop</i> Loading</a>
+      		<a id="lock-fab" class="btn btn-large grey" ng-click="lockUnlock()">Loading</a>
+      	</div>
+      </div>
+      <!--Description-->
+      <div class="row center" ng-controller="lockController">
+      	<div class="col s12 m12 l12">
+      		<i id=lock-icon class="large material-icons">loop</i>
+      	</div>
+      	<div class="col s12 m12 l12">
+      		<h5 id="lock-status-text" class="header col s12 light">Connecting to locker</h5>
       	</div>
       </div>
       <br><br>
@@ -73,4 +79,32 @@
 	<script src="js/materialize.js"></script>
 	<script src="js/init.js"></script>
   </body>
+
+  <footer class="page-footer orange darken-1">
+          <div class="container">
+            <div class="row">
+              <div class="col l6 s12">
+                <h5 class="white-text">About</h5>
+                <p class="grey-text text-lighten-4">Pi-Locker is a web-app that allows you to remotely unlock or lock your locker from anywhere at anytime..</p>
+              </div>
+              <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">Team</h5>
+                <ul>
+                  <li><a class="grey-text text-lighten-3" href="https://github.com/mikhailamod">Mikhail Amod</a></li>
+                  <li><a class="grey-text text-lighten-3" href="https://github.com/FBDuToit">Francois Du Toit</a></li>
+                  <li><a class="grey-text text-lighten-3" href="https://github.com/AdamKaliski">Adam Kaliski</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Tadi Mazara</a></li>
+                  <li><a class="grey-text text-lighten-3" href="https://github.com/JustOmondi">Omondi Ochieng</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Mohamed Zahier Parker</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="footer-copyright">
+            <div class="container">
+            © 2014 Copyright Text
+            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+            </div>
+          </div>
+        </footer>
 </html>
