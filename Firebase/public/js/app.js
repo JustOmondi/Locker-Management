@@ -116,16 +116,24 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
         database.ref('lock').update(updates);
     };
 
-    locker.emailSignIn = function(email, password)
+    var email = document.getElementById("email_field");
+    var password = document.getElementById("password_field");
+
+    locker.emailSignIn = function()
     {
-        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+        console.log(email.value + " " + password.value);
+        firebase.auth().signInWithEmailAndPassword(email.value, password.value).then(function(result){
+            console.log("Signed in");
+            window.location.href = 'views/home.html';
+        }).catch(function(error) {
             // Handle Errors here.
+            console.log("Error");
             var errorCode = error.code;
             var errorMessage = error.message;
             console.log(errorCode + ": " + errorMessage);
             window.location.href = 'index.html';
         });
-        window.location.href = 'views/home.html'
+
     };
 }
 
