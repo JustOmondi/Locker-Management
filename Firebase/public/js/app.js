@@ -115,6 +115,18 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
         updates["/lockStatus"] = value;
         database.ref('lock').update(updates);
     };
+
+    locker.emailSignIn = function(email, password)
+    {
+        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode + ": " + errorMessage);
+            window.location.href = 'index.html';
+        });
+        window.location.href = 'views/home.html'
+    };
 }
 
 function LogController($scope)
