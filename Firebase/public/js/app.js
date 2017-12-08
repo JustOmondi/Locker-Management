@@ -44,6 +44,7 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
 
     var lockButton = $('#lock-fab');
     var lockIcon = $('#lock-icon');
+    var lock_status_text = $("#lock-status-text")
 
     // var lockedContent = "<i class=\"material-icons left\">locked</i>lock_outline</i>";
 
@@ -60,9 +61,9 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
             lockButton.removeClass('grey');
             lockButton.addClass('red');
             lockButton.html('Lock');
-            lockIcon.html("lock_outline");
-            var str = lockButton.clone().wrap('<div/>').parent().html();
-            console.log("html is: " + str);
+            lockIcon.html("lock_open");
+            lock_status_text.html("Your locker is unlocked");
+
         }
         // Unlocked
         else if (lockStatus == 0)
@@ -70,9 +71,8 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
             lockButton.removeClass('grey');
             lockButton.addClass('green');
             lockButton.html('Unlock');
-            lockIcon.html("lock_open");
-            var str = lockButton.clone().wrap('<div/>').parent().html();
-            console.log("html is: " + str);
+            lockIcon.html("lock_outline");
+            lock_status_text.html("Your locker is locked");
         }
 
     }, 2000);
@@ -85,41 +85,43 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
     // Update lock status
     locker.lockUnlock = function ()
     {
-        var updates = {};
         if(lockStatus == 1)
         {
             //Add changes to update list and push to database
-            updates["/lockStatus"] = 0;
-            database.ref('lock').update(updates);
+            locker.pushChanges('lock', 0);
 
             //UI changes
             lockButton.removeClass('red');
             lockButton.addClass('green');
             lockButton.text('Unlock');
-            console.log("lalal " + lockIcon.html());
-            // locker.updateLockStatus();
+
+            lockIcon.html("lock_outline");
+            lock_status_text.html("Your locker is locked");
+            //console.log("lalal " + lockIcon.html());
         }
         else if(lockStatus == 0)
         {
             //Lock
-            updates["/lockStatus"] = 1;
-            database.ref('lock').update(updates);
+            locker.pushChanges('lock', 1);
 
             //UI changes
             lockButton.removeClass('green');
             lockButton.addClass('red');
             lockButton.text('Lock');
-            console.log("old html = " + lockButton.html());
-            // locker.updateLockStatus();
+
+            lockIcon.html("lock_open");
+            lock_status_text.html("Your locker is unlocked");
+            //console.log("old html = " + lockButton.html());
 
         }
     };
 
-    locker.updateLockStatus = function ()
+    //push a list of updates to database
+    locker.pushChanges = function(lock_key, value)
     {
-        database.ref('lock').once('value').then(function (snapshot) {
-            lockStatus = snapshot.val().lockStatus;
-        });
+        var updates = {};
+        updates["/lockStatus"] = value;
+        database.ref('lock').update(updates);
     };
 }
 
