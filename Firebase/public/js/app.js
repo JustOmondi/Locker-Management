@@ -1,9 +1,12 @@
+//Script for connecting to Firebase database and changing data.
+
 var app = angular.module("PiLock", ["firebase"]);
 
+//Changing the status of the lock, and pulling information
 function lockController($scope, $firebaseObject, $firebaseAuth)
 {
     var locker = $scope;
-    var lockStatus = -1;
+    var lockStatus = -1;//initially -1 as we still need to get the current status from Firebase
 
     // Firebase config
     var config =
@@ -34,20 +37,9 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
         // alert("Lock status = "+lockStatus);
     });
 
-    // // Get current lock status from database
-    // database.ref('lock').once('value').then(function(snapshot)
-    // {
-    //     lockStatus = snapshot.val().lockStatus;
-    //     alert("Pulled Lock status = "+lockStatus);
-    // });
-
-
     var lockButton = $('#lock-fab');
     var lockIcon = $('#lock-icon');
     var lock_status_text = $("#lock-status-text")
-
-    // var lockedContent = "<i class=\"material-icons left\">locked</i>lock_outline</i>";
-
 
     // Wait for lockStatus to be fetched from database before doing anything that depends on its value
     setTimeout(function()
