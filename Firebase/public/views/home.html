@@ -7,8 +7,8 @@
 
 	<!-- CSS  -->
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-	<link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	
 	<!-- JQuery -->
@@ -29,8 +29,7 @@
 	<!--AngularFire-->
 	<script src="https://cdn.firebase.com/libs/angularfire/1.0.0/angularfire.min.js"></script>
 
-	<script src="js/app.js"></script>
-	<script src="https://apis.google.com/js/platform.js" async defer></script>
+	<script src="../js/app.js"></script>
 </head>
 
 <body ng-app = "PiLock">
@@ -54,23 +53,20 @@
       <div class="row center">
         <h5 id="lock-description" class="header col s12 light">Unlock and Lock your locker remotely with ease</h5>
       </div>
-      <div class="row">
-      	<div class="input-field col s3 offset-s4">
-      		<i class="material-icons prefix">email</i>
-      		<input id="last_name" type="text" class="validate">
-      		<label for="last_name">Email</label>
+
+		<!--Lock button-->
+      <div class="row center" ng-controller="lockController">
+      	<div class = "col s12 m6 l12 offset-m3">
+      		<a id="lock-fab" class="btn btn-large grey" ng-click="lockUnlock()">Loading</a>
       	</div>
       </div>
-      <div class="row">
-      	<div class="input-field col s3 offset-s4">
-      		<i class="material-icons prefix">security</i>
-      		<input id="password_field" type="password" class="validate">
-      		<label for="password_field">Password</label>
+      <!--Description-->
+      <div class="row center" ng-controller="lockController">
+      	<div class="col s12 m12 l12">
+      		<i id=lock-icon class="large material-icons">loop</i>
       	</div>
-      </div>
-      <div class="row">
-      	<div class="input-field col s6 offset-s5">
-      		<a class="btn deep-orange" type="submit" name="action" href="views/home.html">Login</a>
+      	<div class="col s12 m12 l12">
+      		<h5 id="lock-status-text" class="header col s12 light">Connecting to locker</h5>
       	</div>
       </div>
       <br><br>
@@ -80,8 +76,8 @@
 
   <!--  Scripts-->
 
-	<script src="js/materialize.js"></script>
-	<script src="js/init.js"></script>
+	<script src="../js/materialize.js"></script>
+	<script src="../js/init.js"></script>
   </body>
 
   <footer class="page-footer orange darken-1">
