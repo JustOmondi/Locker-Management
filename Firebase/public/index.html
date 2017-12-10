@@ -40,31 +40,28 @@
 		<nav class="orange darken-2" role="navigation">
 			<div class="nav-wrapper container">
 				<a id="logo-container" href="#" class="brand-logo center">Pi-Locker</a>
-					<ul id="nav-mobile" class="side-nav">
-						<li><a href="#">Navbar Link</a></li>
-					</ul>
-				<a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
 			</div>
 		</nav>
 		</div>
 		<div class="section no-pad-bot" id="index-banner">
 			<div class="container">
-				<br><br>
 				<!-- Main Heading -->
-				<h1 id="lock-heading" class="header center orange-text">Remote Locking</h1>
+				<h1 id="lock-heading" class="header center orange-text hide-on-small-only">Remote Locking</h1>
+				<h3 id="lock-heading-mobile" class="header center orange-text hide-on-med-and-up">Remote Locking</h3>
 
 				<div class="row center">
-					<h5 id="lock-description" class="header col s12 light">Unlock and Lock your locker remotely with ease</h5>
+					<h5 id="lock-description" class="header col s12 light hide-on-small-only">Unlock and Lock your locker remotely with ease.</h5>
+					<h6 id="lock-description" class="header col s8 offset-s2 light hide-on-med-and-up">Unlock and Lock your locker remotely with ease.</h6>
 				</div>
 			<div class="row">
-				<div class="input-field col s4 offset-s4 center-align">
+				<div class="input-field col s8 m5 l4 offset-s2 offset-m3 offset-l4 center-align">
 					<i class="material-icons prefix">email</i>
 					<input id="email_field" type="text" class="validate">
 					<label for="email_field">Email</label>
 				</div>
 			</div>
 			<div class="row">
-				<div class="input-field col s4 offset-s4 center-align">
+				<div class="input-field col s8 m5 l4 offset-s2 offset-m3 offset-l4 center-align">
 					<i class="material-icons prefix">security</i>
 					<input id="password_field" type="password" class="validate"
 							onkeyup="if (event.keyCode == 13)
@@ -111,7 +108,8 @@
             <div class="row">
               <div class="col l6 s12">
                 <h5 class="white-text">About</h5>
-                <p class="grey-text text-lighten-4">Pi-Locker is a web-app that allows you to remotely unlock or lock your locker from anywhere at anytime..</p>
+                <p class="grey-text text-lighten-4">Pi-Locker is a web-app that allows you to remotely unlock or lock your locker from anywhere at anytime.
+                It was developed by a group of 6 students during their internship at Aliens - the mobile development office of Barclays Africa Group Limited.</p>
               </div>
               <div class="col l4 offset-l2 s12">
                 <h5 class="white-text">Team</h5>
