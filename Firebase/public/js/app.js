@@ -118,12 +118,16 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
 
     var email = document.getElementById("email_field");
     var password = document.getElementById("password_field");
+    var circle = $("#loading-circle");
 
     locker.emailSignIn = function()
     {
+        circle.removeClass("hide"); //show loading sign
+        
         console.log(email.value + " " + password.value);
         firebase.auth().signInWithEmailAndPassword(email.value, password.value).then(function(result){
             console.log("Signed in");
+            circle.addClass("hide");
             window.location.href = 'views/home.html';
         }).catch(function(error) {
             // Handle Errors here.
@@ -131,6 +135,7 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
             var errorCode = error.code;
             var errorMessage = error.message;
             console.log(errorCode + ": " + errorMessage);
+            circle.addClass("hide");
             window.location.href = 'index.html';
         });
 

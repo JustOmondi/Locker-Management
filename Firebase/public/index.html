@@ -57,22 +57,40 @@
 					<h5 id="lock-description" class="header col s12 light">Unlock and Lock your locker remotely with ease</h5>
 				</div>
 			<div class="row">
-				<div class="input-field col s3 offset-s4">
+				<div class="input-field col s4 offset-s4 center-align">
 					<i class="material-icons prefix">email</i>
 					<input id="email_field" type="text" class="validate">
 					<label for="email_field">Email</label>
 				</div>
 			</div>
 			<div class="row">
-				<div class="input-field col s3 offset-s4">
+				<div class="input-field col s4 offset-s4 center-align">
 					<i class="material-icons prefix">security</i>
-					<input id="password_field" type="password" class="validate">
+					<input id="password_field" type="password" class="validate"
+							onkeyup="if (event.keyCode == 13)
+                        				document.getElementById('login-button').click()"
+                    />
 					<label for="password_field">Password</label>
 				</div>
 			</div>
 			<div class="row">
-				<div class="input-field col s6 offset-s5" ng-controller="lockController">
-					<a class="btn deep-orange" type="submit" name="action" ng-click="emailSignIn()">Login</a>
+				<div class="input-field col s12 center-align" ng-controller="lockController">
+					<button id="login-button" class="btn deep-orange" type="submit" name="action" ng-click="emailSignIn()">Login</button>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col s12 center-align hide" id="loading-circle">
+					<div class="preloader-wrapper big active">
+			    <div class="spinner-layer spinner-red-only">
+			      <div class="circle-clipper left">
+			        <div class="circle"></div>
+			      </div><div class="gap-patch">
+			        <div class="circle"></div>
+			      </div><div class="circle-clipper right">
+			        <div class="circle"></div>
+			      </div>
+			    </div>
+			  	</div>
 				</div>
 			</div>
 			<br><br>
@@ -110,8 +128,7 @@
           </div>
           <div class="footer-copyright">
             <div class="container">
-            © 2014 Copyright Text
-            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+            © 2017
             </div>
           </div>
     </footer>
