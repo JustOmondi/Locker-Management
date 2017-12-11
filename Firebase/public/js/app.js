@@ -128,11 +128,16 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
             password_error.removeClass("hide");
             console.log(password_error.html());
         } else {
-            firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+            firebase.auth().createUserWithEmailAndPassword(email, password).then(function(result){
+                console.log("Signed in");
+                circle.addClass("hide");
+                window.location.href = 'views/home.html';
+            }).catch(function(error) {
                 // Handle Errors here.
                 var errorCode = error.code;
                 var errorMessage = error.message;
                 console.log(errorCode + ": " + errorMessage);
+                window.location.href = 'sign_up.html';
             });
         }
     };
