@@ -10,7 +10,8 @@ function lockController($scope)
     locker.buttonIcon = "";
 
     // Firebase config
-    var config = {
+    var config =
+        {
         apiKey: "AIzaSyA-rpI8Y86okxMRsysGvAvrB420H7cs5YY",
         authDomain: "locker-management-1be92.firebaseapp.com",
         databaseURL: "https://locker-management-1be92.firebaseio.com",
@@ -110,30 +111,6 @@ function lockController($scope)
     var password = document.getElementById("password_field");
     var circle = $("#loading-circle");
 
-    locker.emailSignUp = function()
-    {
-        var confirm_password = document.getElementById("password_field_confirm");
-        console.log(email.value + " " + password.value);
-        var password_error = $("#sign-in-error");
-        console.log(typeof String(confirm_password));
-        if (confirm_password.value !== password.value) {
-            password_error.removeClass("hide");
-            console.log(password_error.html());
-        } else {
-            firebase.auth().createUserWithEmailAndPassword(email.value, password.value).then(function(result){
-                console.log("Signed in");
-                circle.addClass("hide");
-                window.location.href = 'home.html';
-            }).catch(function(error) {
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                console.log(errorCode + ": " + errorMessage);
-                window.location.href = 'sign_up.html';
-            });
-        }
-    };
-
     locker.emailSignIn = function()
     {
         circle.removeClass("hide"); //show loading sign
@@ -142,7 +119,7 @@ function lockController($scope)
         firebase.auth().signInWithEmailAndPassword(email.value, password.value).then(function(result){
             console.log("Signed in");
             circle.addClass("hide");
-            window.location.href = 'home.html';
+            window.location.href = 'views/home.html';
         }).catch(function(error) {
             // Handle Errors here.
             console.log("Error");
@@ -150,7 +127,7 @@ function lockController($scope)
             var errorMessage = error.message;
             console.log(errorCode + ": " + errorMessage);
             circle.addClass("hide");
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
         });
 
     };
