@@ -3,24 +3,17 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-	<title>PiLock</title>
+	<title>Sign Up - Pi-Locker</title>
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 	<link rel="icon" href="favicon.ico" type="image/x-icon">
 
 	<!-- CSS  -->
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-	<link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	
-	<!-- JQuery -->
-	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-
-	<!-- Angular -->
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
 
 	<!-- Firebase -->
-	<script src="https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
@@ -28,53 +21,91 @@
 	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-firestore.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-messaging.js"></script>
 
+	<!-- JQuery -->
+	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+	<!-- Angular -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+
 	<!--AngularFire-->
 	<script src="https://cdn.firebase.com/libs/angularfire/1.0.0/angularfire.min.js"></script>
 
-	<script src="js/app.js"></script>
+	<script src="../js/app.js"></script>
 	<script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
+
+<header>
+  <div class = "navbar-fixed">
+  <nav class="orange darken-2" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="#" class="brand-logo center">Sign-Up</a>
+      <ul id="nav-history" class="right hide-on-med-and-down">
+        <li><a href="logs.html"><i class="material-icons left">history</i>Login</a></li>
+      </ul>
+      <ul id="nav-home" class="right hide-on-med-and-down">
+        <li class="active"><a href="#"><i class="material-icons left">home</i>Sign-Up</a></li>
+      </ul>
+      <a id="nav-mobile-button" href="#" data-activates="nav-mobile" class="button-collapse">
+        <i class="material-icons">menu</i>
+  </a>
+    </div>
+  </nav>
+</div>
+  <ul id="nav-mobile" class="side-nav" style="transform: translateX(-100%);">
+    <div class="user-view orange darken-2">
+      <div class="valign-wrapper"><h3 class="header white-text light">Pi-Locker</h3></div>
+    </div>
+    <li class="active"><a href="#"><i class="material-icons">home</i>Sign-Up</a></li>
+    <li><a href="logs.html"><i class="material-icons">history</i>Login</a></li>
+  </ul>
+</header>
 
 <main>
 	<body ng-app = "PiLock">
 	<!-- Nav bar -->
-	<div class = "navbar-fixed">
-		<nav class="orange darken-2" role="navigation">
-			<div class="nav-wrapper container">
-				<a id="logo-container" href="#" class="brand-logo center">Pi-Locker</a>
-			</div>
-		</nav>
-		</div>
+	
 		<div class="section no-pad-bot" id="index-banner">
 			<div class="container">
 				<!-- Main Heading -->
-				<h1 id="lock-heading" class="header center orange-text hide-on-small-only">Remote Locking</h1>
-				<h3 id="lock-heading-mobile" class="header center orange-text hide-on-med-and-up">Remote Locking</h3>
+				<h2 id="lock-heading" class="header center orange-text hide-on-small-only">Sign Up</h2>
+				<h3 id="lock-heading-mobile" class="header center orange-text hide-on-med-and-up">Sign Up</h3>
 
 				<div class="row center">
-					<h5 id="lock-description" class="header col s12 light hide-on-small-only">Unlock and Lock your locker remotely with ease.</h5>
-					<h6 id="lock-description" class="header col s8 offset-s2 light hide-on-med-and-up">Unlock and Lock your locker remotely with ease.</h6>
+					<h5 id="lock-description" class="header col s12 light hide-on-small-only">Sign-up for Pi-Locker and experience fluid and instant control of your locker.</h5>
+					<h6 id="lock-description" class="header col s8 offset-s2 light hide-on-med-and-up">Sign-up for Pi-Locker and experience fluid and instant control of your locker.</h6>
 				</div>
 			<div class="row">
 				<div class="input-field col s8 m5 l4 offset-s2 offset-m3 offset-l4 center-align">
 					<i class="material-icons prefix">email</i>
 					<input id="email_field" type="text" class="validate">
-					<label for="email_field">Email</label>
+					<label for="email_field">Enter your email here</label>
 				</div>
 			</div>
 			<div class="row">
 				<div class="input-field col s8 m5 l4 offset-s2 offset-m3 offset-l4 center-align">
 					<i class="material-icons prefix">security</i>
-					<input id="password_field" type="password" class="validate"
+					<input id="password_field" type="password" class="validate"/>
+					<label for="password_field">Enter your password here.</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="input-field col s8 m5 l4 offset-s2 offset-m3 offset-l4 center-align">
+					<i class="material-icons prefix">security</i>
+					<input id="password_field_confirm" type="password" class="validate"
 							onkeyup="if (event.keyCode == 13)
-                        				document.getElementById('login-button').click()"
+                        				document.getElementById('sign-in-button').click()"
                     />
-					<label for="password_field">Password</label>
+					<label for="password_field_confirm">Re-enter your password here.</label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col s12 center-align">
+					<h5 id="sign-in-error" class="header col s12 light red-text hide">The password that you have entered does not match!</h5>
 				</div>
 			</div>
 			<div class="row">
 				<div class="input-field col s12 center-align" ng-controller="lockController">
-					<button id="login-button" class="btn deep-orange" type="submit" name="action" ng-click="emailSignIn()">Login</button>
+					<button id="sign-in-button" class="btn deep-orange" type="submit" name="action" ng-click="emailSignUp()">Sign-Up!</button>
 				</div>
 			</div>
 			<div class="row">
@@ -99,8 +130,8 @@
 	
   <!--  Scripts-->
 
-	<script src="js/materialize.js"></script>
-	<script src="js/init.js"></script>
+	<script src="../js/materialize.js"></script>
+	<script src="../js/init.js"></script>
   </body>
 </main>
 

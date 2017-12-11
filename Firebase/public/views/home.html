@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+	<title>Home - Pi-Locker</title>
+  <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+
+	<!-- CSS  -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	
+	<!-- JQuery -->
+	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+	<!-- Angular -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+
+	<!-- Firebase -->
+	<script src="https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-firestore.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-messaging.js"></script>
+
+	<!--AngularFire-->
+	<script src="https://cdn.firebase.com/libs/angularfire/1.0.0/angularfire.min.js"></script>
+
+	<script src="../js/app.js"></script>
+</head>
+
+<header>
+  <div class = "navbar-fixed">
+  <nav class="orange darken-2" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="#" class="brand-logo center">Pi-Locker</a>
+      <ul id="nav-history" class="right hide-on-med-and-down">
+        <li><a href="logs.html"><i class="material-icons left">history</i>History</a></li>
+      </ul>
+      <ul id="nav-home" class="right hide-on-med-and-down">
+        <li class="active"><a href="#"><i class="material-icons left">home</i>Home</a></li>
+      </ul>
+      <a id="nav-mobile-button" href="#" data-activates="nav-mobile" class="button-collapse">
+        <i class="material-icons">menu</i>
+  </a>
+    </div>
+  </nav>
+</div>
+  <ul id="nav-mobile" class="side-nav" style="transform: translateX(-100%);">
+    <div class="user-view orange darken-2">
+      <div class="valign-wrapper"><h3 class="header white-text light">Pi-Locker</h3></div>
+    </div>
+    <li class="active"><a href="#"><i class="material-icons">home</i>Home</a></li>
+    <li><a href="logs.html"><i class="material-icons">history</i>History</a></li>
+  </ul>
+</header>
+
+<main>
+  <body ng-app = "PiLock">
+  <!-- Nav bar -->
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+      <br><br>
+      <!-- Main Heading -->
+      <h1 id="lock-heading" class="header center orange-text">Remote Locking</h1>
+      
+      <div class="row center">
+        <h5 id="lock-description" class="header col s12 light">Unlock and Lock your locker remotely with ease</h5>
+      </div>
+
+    <!--Lock button-->
+      <div class="row center" ng-controller="lockController">
+        <div class = "col s12 m6 l12 offset-m3">
+          <a id="lock-fab" class="btn btn-large grey" ng-click="lockUnlock()">Loading</a>
+        </div>
+      </div>
+      <!--Description-->
+      <div class="row center" ng-controller="lockController">
+        <div class="col s12 m12 l12">
+          <i id=lock-icon class="large material-icons">loop</i>
+        </div>
+        <div class="col s12 m12 l12">
+          <h5 id="lock-status-text" class="header col s12 light">Connecting to locker</h5>
+        </div>
+      </div>
+      <br><br>
+
+    </div>
+  </div>
+
+  <!--  Scripts-->
+
+  <script src="../js/materialize.js"></script>
+  <script src="../js/init.js"></script>
+  </body>
+</main>
+
+
+  <footer class="page-footer orange darken-1">
+          <div class="container">
+            <div class="row">
+              <div class="col l6 s12">
+                <h5 class="white-text">About</h5>
+                <p class="grey-text text-lighten-4">Pi-Locker is a web-app that allows you to remotely unlock or lock your locker from anywhere at anytime.
+                It was developed by a group of 6 students during their internship at Aliens - the mobile development office of Barclays Africa Group Limited.</p>
+              </div>
+              <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">Team</h5>
+                <ul>
+                  <li><a class="grey-text text-lighten-3" href="https://github.com/mikhailamod">Mikhail Amod</a></li>
+                  <li><a class="grey-text text-lighten-3" href="https://github.com/FBDuToit">Francois Du Toit</a></li>
+                  <li><a class="grey-text text-lighten-3" href="https://github.com/AdamKaliski">Adam Kaliski</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Tadi Mazara</a></li>
+                  <li><a class="grey-text text-lighten-3" href="https://github.com/JustOmondi">Omondi Ochieng</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Mohamed Zahier Parker</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="footer-copyright">
+            <div class="container">
+            © 2017
+            </div>
+          </div>
+        </footer>
+</html>

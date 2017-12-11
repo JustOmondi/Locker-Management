@@ -1,7 +1,7 @@
 // Variables for shell execution
 var shell = require('shelljs');
-var pythonLockCode = './header.py 1';
-var pythonUnlockCode = './header.py 0';
+var pythonLockCode = './header.py 0';
+var pythonUnlockCode = './header.py 1';
 
 // Authenticating into firebase database
 var admin = require("firebase-admin");
@@ -23,14 +23,14 @@ ref.on("child_changed", function(snap) {
   var changedLock = snap.val();
 //  console.log("The updated lock status is " + changedLock.lockStatus);
 
-  if (changedLock.lockStatus == 0) {
+  if (changedLock.lockStatus == 1) {
     if (shell.exec(pythonUnlockCode).code !== 0) {
-      console.log("Unlock script error.");
+      console.log("Unlock shell script error.");
     }
     //setTimeout(setLockOn(changedLock), changedLock.time_out * 1000);
-  } else if (changedLock.lockStatus == 1) {
+  } else if (changedLock.lockStatus == 0) {
     if (shell.exec(pythonLockCode).code !== 0) {
-      console.log("Lock script error.");
+      console.log("Lock shell script error.");
     }
   }
 });
@@ -41,7 +41,7 @@ function setLockOn(ref) {
   //Add changes to update list and push to database
   updates["/lockStatus"] = 1;
   database.ref('lock').update(updates);
-  
+
   // ref.child('lockStatus').set(1);
 }
 
