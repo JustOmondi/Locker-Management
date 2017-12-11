@@ -124,7 +124,7 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
         var confirm_password = document.getElementById("password_field_confirm");
         console.log(email.value + " " + password.value);
         var password_error = $("#sign-in-error");
-        if (password != confirm_password) {
+        if (password.equals(confirm_password) != true) {
             password_error.removeClass("hide");
             console.log(password_error.html());
         } else {
