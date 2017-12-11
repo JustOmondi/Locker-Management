@@ -13,6 +13,9 @@
 	font-size: inherit;
 }
 
+/*-------------------------*/
+/*Logs page styling - START*/
+/*-------------------------*/
 .logs-container
 {
     height: 550px;
@@ -41,9 +44,13 @@
     width: 100%;
 }
 
-.picker__date-display, .picker__day--selected,
-.picker--focused
+/*Style datepicker to have orange accents*/
+.picker__date-display, .picker--focused .picker__day--selected,
+.picker__day--selected
+
 {
     background-color: #f57c00;
 }
-
+/*-------------------------*/
+/*Logs page styling - END*/
+/*-------------------------*/
