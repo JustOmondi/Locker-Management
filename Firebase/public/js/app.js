@@ -124,14 +124,15 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
         var confirm_password = document.getElementById("password_field_confirm");
         console.log(email.value + " " + password.value);
         var password_error = $("#sign-in-error");
-        if (password.equals(confirm_password) != true) {
+        console.log(typeof String(confirm_password));
+        if (confirm_password.value !== password.value) {
             password_error.removeClass("hide");
             console.log(password_error.html());
         } else {
-            firebase.auth().createUserWithEmailAndPassword(email, password).then(function(result){
+            firebase.auth().createUserWithEmailAndPassword(email.value, password.value).then(function(result){
                 console.log("Signed in");
                 circle.addClass("hide");
-                window.location.href = 'views/home.html';
+                window.location.href = 'home.html';
             }).catch(function(error) {
                 // Handle Errors here.
                 var errorCode = error.code;
@@ -150,7 +151,7 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
         firebase.auth().signInWithEmailAndPassword(email.value, password.value).then(function(result){
             console.log("Signed in");
             circle.addClass("hide");
-            window.location.href = 'views/home.html';
+            window.location.href = 'home.html';
         }).catch(function(error) {
             // Handle Errors here.
             console.log("Error");
