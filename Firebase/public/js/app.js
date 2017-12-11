@@ -126,6 +126,7 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
         var password_error = $("#sign-in-error");
         if (password != confirm_password) {
             password_error.removeClass("hide");
+            console.log(password_error.html());
         } else {
             firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
                 // Handle Errors here.
@@ -152,7 +153,7 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
             var errorMessage = error.message;
             console.log(errorCode + ": " + errorMessage);
             circle.addClass("hide");
-            window.location.href = 'index.html';
+            window.location.href = 'login.html';
         });
 
     };

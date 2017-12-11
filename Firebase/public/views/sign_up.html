@@ -12,7 +12,15 @@
 	<link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 	<link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	
+
+	<!-- Firebase -->
+	<script src="https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-firestore.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-messaging.js"></script>er
+
 	<!-- JQuery -->
 	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 
@@ -82,19 +90,19 @@
 					<i class="material-icons prefix">security</i>
 					<input id="password_field_confirm" type="password" class="validate"
 							onkeyup="if (event.keyCode == 13)
-                        				document.getElementById('login-button').click()"
+                        				document.getElementById('sign-in-button').click()"
                     />
 					<label for="password_field_confirm">Re-enter your password here.</label>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col s12 center-align" ng-controller="lockController">
+				<div class="col s12 center-align">
 					<h5 id="sign-in-error" class="header col s12 light red-text hide">The password that you have entered does not match!</h5>
 				</div>
 			</div>
 			<div class="row">
 				<div class="input-field col s12 center-align" ng-controller="lockController">
-					<button id="login-button" class="btn deep-orange" type="submit" name="action" ng-click="emailSignIn()">Sign-Up!</button>
+					<button id="sign-in-button" class="btn deep-orange" type="submit" name="action" ng-click="emailSignUp()">Sign-Up!</button>
 				</div>
 			</div>
 			<div class="row">
