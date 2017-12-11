@@ -9,8 +9,7 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
     var lockStatus = -1;//initially -1 as we still need to get the current status from Firebase
 
     // Firebase config
-    var config =
-        {
+    var config = {
         apiKey: "AIzaSyA-rpI8Y86okxMRsysGvAvrB420H7cs5YY",
         authDomain: "locker-management-1be92.firebaseapp.com",
         databaseURL: "https://locker-management-1be92.firebaseio.com",
@@ -118,6 +117,17 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
 
     var email = document.getElementById("email_field");
     var password = document.getElementById("password_field");
+
+    locker.emailSignUp = function()
+    {
+        console.log(email.value + " " + password.value);
+        firebase.auth().reateUserWithEmailAndPassword(email, password).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode + ": " + errorMessage);
+        });
+    }
 
     locker.emailSignIn = function()
     {
