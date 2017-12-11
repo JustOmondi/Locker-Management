@@ -21,6 +21,26 @@ exports.unlock = functions.https.onRequest((request, response) => {
     response.send("0");
 });
 
+exports.unlockWithTimeout = functions.https.onRequest((request, response) => {
+    admin.database().ref('/lock').set({lockstatus: 0});
+    response.send("0");
+
+    //Code that enables auto lock after timeout, retrofitted from nodejs, still needs testing
+    admin.database().ref('/lock').on("value", function(snapshot) {
+      console.log(snapshot.time_out());
+
+      if (snapshot.time_out() != -1) {
+        setTimeout(function() {
+          admin.database().ref('/lock').set({lockstatus: 1});
+        }, snapshot.time_out());
+      }
+
+    }, function (errorObject) {
+      console.log("The read failed: " + errorObject.code);
+    });
+
+});
+
 exports.addMessage = functions.https.onRequest((req, res) => {
     // Grab the text parameter.
     const original = req.query.text;
