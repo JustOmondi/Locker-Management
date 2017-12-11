@@ -30,30 +30,22 @@ function lockController($scope)
 
     var database = firebaseApp.database();
 
+    var lockButton = $('#lock-fab');
+    var lockIcon = $('#lock-icon');
+    var lock_status_text = $("#lock-status-text");
+
+    // Listen for change to database, and change relevant UI.
     database.ref('lock').on('value', function(snapshot)
     {
         console.log(snapshot.val());
         lockStatus = snapshot.val().lockStatus;
         console.log("Lock status ="+lockStatus);
-        // alert("Lock status = "+lockStatus);
-    });
-
-
-    var lockButton = $('#lock-fab');
-    var lockIcon = $('#lock-icon');
-    var lock_status_text = $("#lock-status-text");
-
-
-    // Wait for lockStatus to be fetched from database before doing anything that depends on its value
-    setTimeout(function()
-    {
-        // alert("Lock status outside = "+lockStatus);
-        // Locked
         if(lockStatus == 1)
         {
             // lockButton.empty();
 
             lockButton.removeClass('grey');
+            lockButton.removeClass('green');
             lockButton.addClass('red');
             lockButton.html('Lock');
             lockIcon.html("lock_open");
@@ -64,14 +56,14 @@ function lockController($scope)
         else if (lockStatus == 0)
         {
             lockButton.removeClass('grey');
+            lockButton.removeClass('red');
             lockButton.addClass('green');
             lockButton.html('Unlock');
             lockIcon.html("lock_outline");
             lock_status_text.html("Your locker is locked");
         }
-
-    }, 2000); // Duration = 2000 milliseconds = 2 seconds
-
+        // alert("Lock status = "+lockStatus);
+    });
 
     // Update lock status
     locker.lockUnlock = function ()
@@ -115,19 +107,44 @@ function lockController($scope)
         database.ref('lock').update(updates);
     };
 
+
     var email = document.getElementById("email_field");
     var password = document.getElementById("password_field");
     var circle = $("#loading-circle");
 
+    locker.emailSignUp = function()
+    {
+        var confirm_password = document.getElementById("password_field_confirm");
+        console.log(email.value + " " + password.value);
+        var password_error = $("#sign-in-error");
+        console.log(typeof String(confirm_password));
+        if (confirm_password.value !== password.value) {
+            password_error.removeClass("hide");
+            console.log(password_error.html());
+        } else {
+            firebase.auth().createUserWithEmailAndPassword(email.value, password.value).then(function(result){
+                console.log("Signed in");
+                circle.addClass("hide");
+                window.location.href = 'home.html';
+            }).catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log(errorCode + ": " + errorMessage);
+                window.location.href = 'sign_up.html';
+            });
+        }
+    };
+
     locker.emailSignIn = function()
     {
         circle.removeClass("hide"); //show loading sign
-        
+
         console.log(email.value + " " + password.value);
         firebase.auth().signInWithEmailAndPassword(email.value, password.value).then(function(result){
             console.log("Signed in");
             circle.addClass("hide");
-            window.location.href = 'views/home.html';
+            window.location.href = 'home.html';
         }).catch(function(error) {
             // Handle Errors here.
             console.log("Error");
@@ -135,13 +152,30 @@ function lockController($scope)
             var errorMessage = error.message;
             console.log(errorCode + ": " + errorMessage);
             circle.addClass("hide");
-            window.location.href = 'index.html';
+            window.location.href = 'login.html';
         });
 
     };
 }
 
-function LogController($scope)
+function logsController($scope)
 {
     var logs = $scope;
+
+    var selectedDate;
+
+    $('.datepicker').pickadate({
+        selectMonths: true, // Creates a dropdown to control month
+        selectYears: 15, // Creates a dropdown of 15 years to control year,
+        today: 'Today',
+        clear: 'Clear',
+        close: 'Ok',
+        closeOnSelect: false, // Close upon selecting a date,
+        onClose: function()
+        {
+            // console.log(this.get('select', 'yyyy-mm-dd'));
+            selectedDate = this.get('select', 'yyyy-mm-dd');
+        }
+    });
+
 }
