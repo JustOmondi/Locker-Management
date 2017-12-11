@@ -38,9 +38,10 @@ ref.on("child_changed", function(snap) {
     if (shell.exec(pythonUnlockCode).code !== 0) {
       console.log("Unlock shell script error.");
     }
-    if (changedLock.time_out != -1) {
-      setTimeout(shell.exec(pythonLockCode), changedLock.time_out());
-    }
+    //Commented out till final structure layout of firebase database
+    // if (changedLock.time_out != -1) {
+      // setTimeout(shell.exec(pythonLockCode), changedLock.time_out;
+    // }
     //setTimeout(setLockOn(changedLock), changedLock.time_out * 1000);
   } else if (changedLock.lockStatus == 0) {
     if (shell.exec(pythonLockCode).code !== 0) {
