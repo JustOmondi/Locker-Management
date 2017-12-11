@@ -121,13 +121,19 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
 
     locker.emailSignUp = function()
     {
+        var confirm_password = document.getElementById("password_field_confirm");
         console.log(email.value + " " + password.value);
-        firebase.auth().reateUserWithEmailAndPassword(email, password).catch(function(error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            console.log(errorCode + ": " + errorMessage);
-        });
+        var password_error = $("#sign-in-error");
+        if (password != confirm_password) {
+            password_error.removeClass("hide");
+        } else {
+            firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log(errorCode + ": " + errorMessage);
+            });
+        }
     };
 
     locker.emailSignIn = function()
