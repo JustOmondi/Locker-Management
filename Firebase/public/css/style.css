@@ -13,20 +13,37 @@
 	font-size: inherit;
 }
 
-.container
+.logs-container
 {
-    height: 500px;
+    height: 550px;
     width: 100%;
+    padding: 20px;
 }
 
 .logs-left
 {
     height: 100%;
     width: 50%;
+    padding: 20px;
+    float: left;
 }
 
 .logs-right
 {
     height: 100%;
     width: 50%;
+    float: right;
 }
+
+.datepicker
+{
+    height: 100%;
+    width: 100%;
+}
+
+.picker__date-display, .picker__day--selected,
+.picker--focused
+{
+    background-color: #f57c00;
+}
+
