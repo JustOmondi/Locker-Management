@@ -128,7 +128,7 @@ function lockController($scope, $firebaseObject, $firebaseAuth)
             var errorMessage = error.message;
             console.log(errorCode + ": " + errorMessage);
         });
-    }
+    };
 
     locker.emailSignIn = function()
     {
