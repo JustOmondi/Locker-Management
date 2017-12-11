@@ -163,6 +163,7 @@ function logsController($scope)
     var logs = $scope;
 
     var selectedDate;
+    console.log("main level");
 
     $('.datepicker').pickadate({
         selectMonths: true, // Creates a dropdown to control month
@@ -178,4 +179,38 @@ function logsController($scope)
         }
     });
 
+    logs.loglist =
+        [
+            {
+                "lockStatus" : 0,
+                "lock_time" : "2017-07-15 21:50:15"
+            },
+            {
+                "lockStatus" : 1,
+                "lock_time" : "2017-08-13 11:50:15"
+            }
+        ];
+
+    for (var i = 0; i<logs.loglist.length; i++)
+    {
+        var obj = logs.loglist[i];
+        console.log("hfrugf");
+
+        if(obj.lockStatus == 0)
+        {
+            obj["lock_icon"] = "lock_outline";
+            obj["lock_title"] = "Locked";
+        }
+        else
+        {
+            obj["lock_icon"] = "lock_open";
+            obj["lock_title"] = "Unlocked";
+        }
+
+        // $scope.$apply(function ()
+        // {
+        // });
+
+        console.log(obj);
+    }
 }

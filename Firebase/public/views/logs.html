@@ -32,39 +32,53 @@
     <script src="../js/app.js"></script>
 </head>
 
-<body ng-app = "PiLock">
-<!-- Nav bar -->
-<nav class="orange darken-2" role="navigation">
-    <div class="nav-wrapper container">
-        <a id="logo-container" href="#" class="brand-logo center">Pi-Locker</a>
-        <ul id="nav-mobile" class="side-nav">
-            <li><a href="#">Navbar Link</a></li>
-        </ul>
-        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-    </div>
-</nav>
+    <body ng-app = "PiLock">
+    <!-- Nav bar -->
+    <nav class="orange darken-2" role="navigation">
+        <div class="nav-wrapper container">
+            <a id="logo-container" href="#" class="brand-logo center">Pi-Locker</a>
+            <ul id="nav-mobile" class="side-nav">
+                <li><a href="#">Navbar Link</a></li>
+            </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+        </div>
+    </nav>
 
-    <div class="logs-container" ng-controller="logsController">
+    <div class="logs-container">
+        <div  class="grey lighten-4"  >
+            <!--Date selector-->
+            <div class="row center">
+                <div class="col s12 m6 l4 offset-m3 offset-l4">
+                    <h4 class="header center orange-text">History</h4>
+                    <br><br>
+                    <label for="calendar"><b class="black-text">Click here to choose a date</b></label>
+                    <input id ="calendar" type="text" class="datepicker">
 
-        <!--Date selector-->
-        <div class="logs-left">
-            <div>
-                <h3>Pick a date below</h3>
-                <input type="text" class="datepicker">
+                </div>
             </div>
-        </div>
+            <div class="row" ng-controller="logsController">
+                <div class="col s12 m6 l6 offset-l3">
+                    <ul class="collection with-header z-depth-3" >
+                        <li class="collection-header grey lighten-2"><h6 class="orange-text"><b>Lock History on 15th December 2017</b></h6></li>
+                        <li class="collection-item avatar" ng-repeat ="log in loglist" >
+                            <i class="material-icons circle">{{log.lock_icon}}</i>
+                            <span class="title">{{log.lock_time}}</span>
+                            <p>{{log.lock_title}}</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
-        <!--List of logs-->
-        <div class="logs-right">
-
+            <br><br>
         </div>
     </div>
 
-<!--  Scripts-->
+    <!--  Scripts-->
 
-<script src="../js/materialize.js"></script>
-<script src="../js/init.js"></script>
-</body>
+    <script src="../js/materialize.js"></script>
+    <script src="../js/init.js"></script>
+    </body>
+
 
 <footer class="page-footer orange darken-1">
     <div class="container">
