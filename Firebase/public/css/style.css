@@ -12,3 +12,21 @@
 .icon-block .material-icons {
 	font-size: inherit;
 }
+
+.container
+{
+    height: 500px;
+    width: 100%;
+}
+
+.logs-left
+{
+    height: 100%;
+    width: 50%;
+}
+
+.logs-right
+{
+    height: 100%;
+    width: 50%;
+}
