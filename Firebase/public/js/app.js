@@ -200,11 +200,13 @@ function logsController($scope)
         {
             obj["lock_icon"] = "lock_outline";
             obj["lock_title"] = "Locked";
+            obj["color"] = "material-icons circle red"
         }
         else
         {
             obj["lock_icon"] = "lock_open";
             obj["lock_title"] = "Unlocked";
+            obj["color"] = "material-icons circle green"
         }
 
         // $scope.$apply(function ()
