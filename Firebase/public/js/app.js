@@ -24,8 +24,6 @@ function lockController($scope)
 
     locker.buttonIcon = "";
 
-
-
     var lockButton = $('#lock-fab');
     var lockIcon = $('#lock-icon');
     var lock_status_text = $("#lock-status-text");
