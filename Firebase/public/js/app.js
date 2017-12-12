@@ -2,6 +2,20 @@
 
 var app = angular.module("PiLock", ["firebase"]);
 
+var config =
+    {
+        apiKey: "AIzaSyA-rpI8Y86okxMRsysGvAvrB420H7cs5YY",
+        authDomain: "locker-management-1be92.firebaseapp.com",
+        databaseURL: "https://locker-management-1be92.firebaseio.com",
+        projectId: "locker-management-1be92",
+        storageBucket: "locker-management-1be92.appspot.com",
+        messagingSenderId: "484082976169"
+    };
+
+// Initialize Firebase app
+var firebaseApp = firebase.initializeApp(config);
+var database = firebaseApp.database();
+
 app.service('userService', function(){
     this.currentUser = { uid: ""};
 
@@ -26,39 +40,18 @@ app.service('userService', function(){
 });
 
 app.controller('lockController', ["$scope", 'userService', function($scope, userService, $location){
-    var locker = $scope;
+    var login = $scope;
     var lockStatus = -1;//initially -1 as we still need to get the current status from Firebase
 
-    locker.buttonIcon = "";
-
-    var config =
-        {
-            apiKey: "AIzaSyA-rpI8Y86okxMRsysGvAvrB420H7cs5YY",
-            authDomain: "locker-management-1be92.firebaseapp.com",
-            databaseURL: "https://locker-management-1be92.firebaseio.com",
-            projectId: "locker-management-1be92",
-            storageBucket: "locker-management-1be92.appspot.com",
-            messagingSenderId: "484082976169"
-        };
-
-// Initialize Firebase app
-    var firebaseApp = firebase.initializeApp(config);
-    console.log(firebaseApp.name); // "[DEFAULT]"
-
-    // Retrieve services via the firebaseApp variable...
-
-    var database = firebaseApp.database();
+    login.buttonIcon = "";
 
     var lockButton = $('#lock-fab');
     var lockIcon = $('#lock-icon');
     var lock_status_text = $("#lock-status-text");
-    console.log("Trace");
     var currentUserID = localStorage.getItem("userid");
-    console.log(currentUserID);
+
     database.ref(currentUserID).on('value', function (snapshot) {
-        console.log(snapshot.val());
         lockStatus = snapshot.val().lockStatus;
-        console.log("Lock status =" + lockStatus);
         if (lockStatus == 1) {
             // lockButton.empty();
             lockButton.removeClass('grey');
@@ -78,14 +71,40 @@ app.controller('lockController', ["$scope", 'userService', function($scope, user
             lockIcon.html("lock_outline");
             lock_status_text.html("Your locker is locked");
         }
-        // alert("Lock status = "+lockStatus);
     });
 
+    //Function to create a timestamp when lockStatus is changed.
+    login.generateLog = function(lockStatus)
+    {
+        var date = new Date();
+        var month = date.getMonth()+1;
+        var year = date.getFullYear();
+        var day = date.getDate();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        var sec = date.getSeconds();
+
+        if(hour < 10) {hour = "0"+hour;}
+        if(min < 10) {min = "0"+min;}
+        if(sec < 10) {sec = "0"+sec;}
+        if(month < 10) {month = "0"+month;}
+        if(day < 10) {day = "0"+day;}
+
+        var dateString = year+"-"+month+"-"+day;
+        var timeString = hour+":"+min+":"+sec;
+
+        var userid = localStorage.getItem("userid");
+
+        var updates = {};
+        updates["/logs/"+dateString+"/"+timeString] = lockStatus;
+        database.ref(userid).update(updates);
+
+    };
     // Update lock status
-    locker.lockUnlock = function () {
+    login.lockUnlock = function () {
         if (lockStatus == 1) {
             //Add changes to update list and push to database
-            locker.pushChanges('lock', 0);
+            login.pushChanges('lock', 0);
 
             //UI changes
             lockButton.removeClass('red');
@@ -95,11 +114,11 @@ app.controller('lockController', ["$scope", 'userService', function($scope, user
             lockIcon.html("lock_outline");
             lock_status_text.html("Your locker is locked");
             //console.log("lalal " + lockIcon.html());
-            locker.generateLog(1);
+            login.generateLog(1);
         }
         else if (lockStatus == 0) {
             //Lock
-            locker.pushChanges('lock', 1);
+            login.pushChanges('lock', 1);
 
             //UI changes
             lockButton.removeClass('green');
@@ -108,14 +127,12 @@ app.controller('lockController', ["$scope", 'userService', function($scope, user
 
             lockIcon.html("lock_open");
             lock_status_text.html("Your locker is unlocked");
-            //console.log("old html = " + lockButton.html());
-            locker.generateLog(0);
-
+            login.generateLog(0);
         }
     };
 
     //push a list of updates to database
-    locker.pushChanges = function (lock_key, value) {
+    login.pushChanges = function (lock_key, value) {
         var updates = {};
         updates["/lockStatus"] = value;
         var uID = localStorage.getItem("userid");
@@ -129,25 +146,12 @@ app.controller('loginController', ["$scope", 'userService', "$location", functio
     var email = document.getElementById("email_field");
     var password = document.getElementById("password_field");
     var circle = $("#loading-circle");
-    // Firebase config
-    var config =
-        {
-            apiKey: "AIzaSyA-rpI8Y86okxMRsysGvAvrB420H7cs5YY",
-            authDomain: "locker-management-1be92.firebaseapp.com",
-            databaseURL: "https://locker-management-1be92.firebaseio.com",
-            projectId: "locker-management-1be92",
-            storageBucket: "locker-management-1be92.appspot.com",
-            messagingSenderId: "484082976169"
-        };
-
-    // Initialize Firebase app
-    var firebaseApp = firebase.initializeApp(config);
+    var loginErrorText = $("#login-error");
 
     login.emailSignUp = function () {
         var confirm_password = document.getElementById("password_field_confirm");
-        console.log(email.value + " " + password.value);
         var password_error = $("#sign-in-error");
-        console.log(typeof String(confirm_password));
+
         if (confirm_password.value !== password.value) {
             password_error.removeClass("hide");
             console.log(password_error.html());
@@ -183,51 +187,9 @@ app.controller('loginController', ["$scope", 'userService', "$location", functio
             var errorMessage = error.message;
             console.log(errorCode + ": " + errorMessage);
             circle.addClass("hide");
+            loginErrorText.removeClass("hide");
             window.location.href = 'login.html';
         });
-
-    };
-
-    locker.generateLog = function(lockStatus)
-    {
-        var date = new Date();
-        var month = date.getMonth()+1;
-        var year = date.getFullYear();
-        var day = date.getDate();
-        var hour = date.getHours();
-        var min = date.getMinutes();
-        var sec = date.getSeconds();
-
-        if(hour < 10)
-        {
-            hour = "0"+hour;
-        }
-        if(min < 10)
-        {
-            min = "0"+min;
-        }
-        if(sec < 10)
-        {
-            sec = "0"+sec;
-        }
-        if(month < 10)
-        {
-            month = "0"+month;
-        }
-        if(day < 10)
-        {
-            day = "0"+day;
-        }
-
-        var dateString = year+"-"+month+"-"+day;
-        var timeString = hour+":"+min+":"+sec;
-
-        var userid = "PCWsFlrZqWPPnUACRDm4MFe5Zk13";
-        console.log(userid);
-
-        var updates = {};
-        updates["/logs/"+dateString+"/"+timeString] = lockStatus;
-        database.ref(userid).update(updates);
 
     };
 }]);
@@ -256,11 +218,12 @@ app.controller('logsController', ["$scope", 'userService', function($scope, user
     //temp var for testing
     logs.loglist = [];
     tempList = [];
-    var userID = 'PCWsFlrZqWPPnUACRDm4MFe5Zk13';
+    var userID = localStorage.getItem("userid");
+    console.log("Logs, UserID = " + userID);
     function retrieveList(date) {
         $scope.$apply(function () {logs.loglist=[];});
         tempList=[];
-        firebase.database().ref(userID + "/logs/" + date + "/").once('value').then(function(snapshot) {
+        firebaseApp.database().ref(userID + "/logs/" + date + "/").once('value').then(function(snapshot) {
             var list = snapshot.val();
             for(var key in list)
             {
@@ -303,7 +266,6 @@ app.controller('logsController', ["$scope", 'userService', function($scope, user
                     logs.loglist.push(object);
                 });
             }//end else
-        }
-    }
-
-}
+        }//end for
+    }//end function
+}]);
