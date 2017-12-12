@@ -95,6 +95,7 @@ app.controller('lockController', ["$scope", 'userService', function($scope, user
             lockIcon.html("lock_outline");
             lock_status_text.html("Your locker is locked");
             //console.log("lalal " + lockIcon.html());
+            locker.generateLog(1);
         }
         else if (lockStatus == 0) {
             //Lock
@@ -108,6 +109,7 @@ app.controller('lockController', ["$scope", 'userService', function($scope, user
             lockIcon.html("lock_open");
             lock_status_text.html("Your locker is unlocked");
             //console.log("old html = " + lockButton.html());
+            locker.generateLog(0);
 
         }
     };
@@ -185,10 +187,56 @@ app.controller('loginController', ["$scope", 'userService', "$location", functio
         });
 
     };
+
+    locker.generateLog = function(lockStatus)
+    {
+        var date = new Date();
+        var month = date.getMonth()+1;
+        var year = date.getFullYear();
+        var day = date.getDate();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        var sec = date.getSeconds();
+
+        if(hour < 10)
+        {
+            hour = "0"+hour;
+        }
+        if(min < 10)
+        {
+            min = "0"+min;
+        }
+        if(sec < 10)
+        {
+            sec = "0"+sec;
+        }
+        if(month < 10)
+        {
+            month = "0"+month;
+        }
+        if(day < 10)
+        {
+            day = "0"+day;
+        }
+
+        var dateString = year+"-"+month+"-"+day;
+        var timeString = hour+":"+min+":"+sec;
+
+        var userid = "PCWsFlrZqWPPnUACRDm4MFe5Zk13";
+        console.log(userid);
+
+        var updates = {};
+        updates["/logs/"+dateString+"/"+timeString] = lockStatus;
+        database.ref(userid).update(updates);
+
+    };
 }]);
 
 app.controller('logsController', ["$scope", 'userService', function($scope, userService, $location){
     var logs = $scope;
+
+    var selectedDate;
+    var date_text = $("#date-text");
 
     $('.datepicker').pickadate({
         selectMonths: true, // Creates a dropdown to control month
@@ -196,6 +244,66 @@ app.controller('logsController', ["$scope", 'userService', function($scope, user
         today: 'Today',
         clear: 'Clear',
         close: 'Ok',
-        closeOnSelect: false // Close upon selecting a date,
+        closeOnSelect: true, // Close upon selecting a date,
+        onClose: function()
+        {
+            // console.log(this.get('select', 'yyyy-mm-dd'));
+            selectedDate = this.get('select', 'yyyy-mm-dd');
+            date_text.html("<b>Showing history for " + selectedDate + "</b>");
+            retrieveList(selectedDate);
+        }
     });
-}]);
+    //temp var for testing
+    logs.loglist = [];
+    tempList = [];
+    var userID = 'PCWsFlrZqWPPnUACRDm4MFe5Zk13';
+    function retrieveList(date) {
+        $scope.$apply(function () {logs.loglist=[];});
+        tempList=[];
+        firebase.database().ref(userID + "/logs/" + date + "/").once('value').then(function(snapshot) {
+            var list = snapshot.val();
+            for(var key in list)
+            {
+                if (list.hasOwnProperty(key)) {
+                    var object = {};
+                    object["lockStatus"] = list[key];
+                    object["lock_time"] = key;
+                    tempList.push(object);
+                }
+            }
+            display_list();
+
+        });
+    }
+    function display_list() {
+        for(var i=0;i<tempList.length;i++)
+        {
+            var obj = tempList[i];
+            if(obj["lockStatus"] === 0)
+            {
+                object = {};
+                object["lockStatus"] = 0;
+                object["lock_time"] = obj["lock_time"];
+                object["lock_icon"] = "lock_outline";
+                object["lock_title"] = "Locked";
+                object["color"] = "material-icons circle red";
+                $scope.$apply(function () {
+                    logs.loglist.push(object);
+                });
+            }
+            else
+            {
+                object = {};
+                object["lockStatus"] = 1;
+                object["lock_time"] = obj["lock_time"];
+                object["lock_icon"] = "lock_open";
+                object["lock_title"] = "Unlocked";
+                object["color"] = "material-icons circle green";
+                $scope.$apply(function () {
+                    logs.loglist.push(object);
+                });
+            }//end else
+        }
+    }
+
+}

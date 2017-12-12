@@ -12,10 +12,13 @@
 .icon-block .material-icons {
 	font-size: inherit;
 }
-/**
-.container
+
+/*-------------------------*/
+/*Logs page styling - START*/
+/*-------------------------*/
+.logs-container
 {
-    height: 500px;
+    height: 550px;
     width: 100%;
 }
 
@@ -23,11 +26,30 @@
 {
     height: 100%;
     width: 50%;
+    padding: 20px;
+    float: left;
 }
 
 .logs-right
 {
     height: 100%;
     width: 50%;
+    float: right;
 }
-*/
+
+.datepicker
+{
+    height: 100%;
+    width: 100%;
+}
+
+/*Style datepicker to have orange accents*/
+.picker__date-display, .picker--focused .picker__day--selected,
+.picker__day--selected
+
+{
+    background-color: #f57c00;
+}
+/*-------------------------*/
+/*Logs page styling - END*/
+/*-------------------------*/

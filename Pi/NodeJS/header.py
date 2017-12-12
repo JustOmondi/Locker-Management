@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import sys
 import RPi.GPIO as GPIO
 from time import sleep
@@ -9,7 +11,6 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(12,GPIO.OUT)
 pwm = GPIO.PWM(12,50)
 pwm.start(0)
-GPIO.setup(40,GPIO.OUT)
 #This function changes the angle of the servo motor
 
 def SetAngle(duty):
@@ -22,11 +23,9 @@ def SetAngle(duty):
 
 def Lock():
     SetAngle(10)
-    GPIO.output(40,False)
     
 def Unlock():
     SetAngle(5.8)
-    GPIO.output(40,True)
     
 
 if sys.argv[1] == '0':
@@ -34,8 +33,9 @@ if sys.argv[1] == '0':
     print("Unlocked lock!")
 elif sys.argv[1] == '1':
     Lock()
-    print("Locked lock!")
-    
+    print("Locked lock!")   
+elif sys.argv[1]=='2':
+    GPIO.cleanup()
+    print("Shutting down...")
     
 pwm.stop()
-GPIO.cleanup()
