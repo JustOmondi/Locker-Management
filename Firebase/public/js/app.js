@@ -2,16 +2,8 @@
 
 var app = angular.module("PiLock", ["firebase"]);
 
-function lockController($scope)
-{
-    var locker = $scope;
-    var lockStatus = -1;//initially -1 as we still need to get the current status from Firebase
-
-    locker.buttonIcon = "";
-
-    // Firebase config
-    var config =
-        {
+var config =
+    {
         apiKey: "AIzaSyA-rpI8Y86okxMRsysGvAvrB420H7cs5YY",
         authDomain: "locker-management-1be92.firebaseapp.com",
         databaseURL: "https://locker-management-1be92.firebaseio.com",
@@ -20,30 +12,48 @@ function lockController($scope)
         messagingSenderId: "484082976169"
     };
 
-    // Initialize Firebase app
-    var firebaseApp = firebase.initializeApp(config);
+// Initialize Firebase app
+var firebaseApp = firebase.initializeApp(config);
+var database = firebaseApp.database();
 
+app.service('userService', function(){
+    this.currentUser = { uid: ""};
 
-    console.log(firebaseApp.name); // "[DEFAULT]"
+    this.user = function(){
+        return this.currentUser;
+    };
 
-    // Retrieve services via the firebaseApp variable...
+    this.getUserID = function(){
+        return this.currentUser.uid;
+    };
 
-    var database = firebaseApp.database();
+    this.setUserID = function (userId) {
+        console.log("User Service " + userId);
+        this.currentUser.uid = userId;
+        console.log(this.currentUser);
+    };
+
+    this.setUser = function (userData) {
+        console.log("User Service " + userData.uid);
+        this.currentUser = userData;
+    };
+});
+
+app.controller('lockController', ["$scope", 'userService', function($scope, userService, $location){
+    var login = $scope;
+    var lockStatus = -1;//initially -1 as we still need to get the current status from Firebase
+
+    login.buttonIcon = "";
 
     var lockButton = $('#lock-fab');
     var lockIcon = $('#lock-icon');
     var lock_status_text = $("#lock-status-text");
+    var currentUserID = localStorage.getItem("userid");
 
-    // Listen for change to database, and change relevant UI.
-    database.ref('lock').on('value', function(snapshot)
-    {
-        console.log(snapshot.val());
+    database.ref(currentUserID).on('value', function (snapshot) {
         lockStatus = snapshot.val().lockStatus;
-        console.log("Lock status ="+lockStatus);
-        if(lockStatus == 1)
-        {
+        if (lockStatus == 1) {
             // lockButton.empty();
-
             lockButton.removeClass('grey');
             lockButton.removeClass('green');
             lockButton.addClass('red');
@@ -53,8 +63,7 @@ function lockController($scope)
 
         }
         // Unlocked
-        else if (lockStatus == 0)
-        {
+        else if (lockStatus == 0) {
             lockButton.removeClass('grey');
             lockButton.removeClass('red');
             lockButton.addClass('green');
@@ -62,16 +71,40 @@ function lockController($scope)
             lockIcon.html("lock_outline");
             lock_status_text.html("Your locker is locked");
         }
-        // alert("Lock status = "+lockStatus);
     });
 
-    // Update lock status
-    locker.lockUnlock = function ()
+    //Function to create a timestamp when lockStatus is changed.
+    login.generateLog = function(lockStatus)
     {
-        if(lockStatus == 1)
-        {
+        var date = new Date();
+        var month = date.getMonth()+1;
+        var year = date.getFullYear();
+        var day = date.getDate();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        var sec = date.getSeconds();
+
+        if(hour < 10) {hour = "0"+hour;}
+        if(min < 10) {min = "0"+min;}
+        if(sec < 10) {sec = "0"+sec;}
+        if(month < 10) {month = "0"+month;}
+        if(day < 10) {day = "0"+day;}
+
+        var dateString = year+"-"+month+"-"+day;
+        var timeString = hour+":"+min+":"+sec;
+
+        var userid = localStorage.getItem("userid");
+
+        var updates = {};
+        updates["/logs/"+dateString+"/"+timeString] = lockStatus;
+        database.ref(userid).update(updates);
+
+    };
+    // Update lock status
+    login.lockUnlock = function () {
+        if (lockStatus == 1) {
             //Add changes to update list and push to database
-            locker.pushChanges('lock', 0);
+            login.pushChanges('lock', 0);
 
             //UI changes
             lockButton.removeClass('red');
@@ -81,11 +114,11 @@ function lockController($scope)
             lockIcon.html("lock_outline");
             lock_status_text.html("Your locker is locked");
             //console.log("lalal " + lockIcon.html());
+            login.generateLog(1);
         }
-        else if(lockStatus == 0)
-        {
+        else if (lockStatus == 0) {
             //Lock
-            locker.pushChanges('lock', 1);
+            login.pushChanges('lock', 1);
 
             //UI changes
             lockButton.removeClass('green');
@@ -94,39 +127,43 @@ function lockController($scope)
 
             lockIcon.html("lock_open");
             lock_status_text.html("Your locker is unlocked");
-            //console.log("old html = " + lockButton.html());
-
+            login.generateLog(0);
         }
     };
 
     //push a list of updates to database
-    locker.pushChanges = function(lock_key, value)
-    {
+    login.pushChanges = function (lock_key, value) {
         var updates = {};
         updates["/lockStatus"] = value;
-        database.ref('lock').update(updates);
-    };
+        var uID = localStorage.getItem("userid");
+        database.ref(uID).update(updates);
+    }
+}]);
 
+app.controller('loginController', ["$scope", 'userService', "$location", function($scope, userService, $location){
+    var login = $scope;
 
     var email = document.getElementById("email_field");
     var password = document.getElementById("password_field");
     var circle = $("#loading-circle");
+    var loginErrorText = $("#login-error");
 
-    locker.emailSignUp = function()
-    {
+    login.emailSignUp = function () {
         var confirm_password = document.getElementById("password_field_confirm");
-        console.log(email.value + " " + password.value);
         var password_error = $("#sign-in-error");
-        console.log(typeof String(confirm_password));
+
         if (confirm_password.value !== password.value) {
             password_error.removeClass("hide");
             console.log(password_error.html());
         } else {
-            firebase.auth().createUserWithEmailAndPassword(email.value, password.value).then(function(result){
+            firebaseApp.auth().createUserWithEmailAndPassword(email.value, password.value).then(function (result) {
                 console.log("Signed in");
+                userService.setUser(result);
                 circle.addClass("hide");
+                localStorage.setItem("userid", result.uid);
+                database.ref("Users/"+result.uid).update({"Unlocked": 0});
                 window.location.href = 'home.html';
-            }).catch(function(error) {
+            }).catch(function (error) {
                 // Handle Errors here.
                 var errorCode = error.code;
                 var errorMessage = error.message;
@@ -136,34 +173,33 @@ function lockController($scope)
         }
     };
 
-    locker.emailSignIn = function()
-    {
+    login.emailSignIn = function () {
         circle.removeClass("hide"); //show loading sign
-
-        console.log(email.value + " " + password.value);
-        firebase.auth().signInWithEmailAndPassword(email.value, password.value).then(function(result){
-            console.log("Signed in");
+        firebaseApp.auth().signInWithEmailAndPassword(email.value, password.value).then(function (result) {
+            console.log("Signed in " + result.uid);
+            userService.setUserID(result.uid);
             circle.addClass("hide");
+            localStorage.setItem("userid", result.uid);
             window.location.href = 'home.html';
-        }).catch(function(error) {
+        }).catch(function (error) {
             // Handle Errors here.
             console.log("Error");
             var errorCode = error.code;
             var errorMessage = error.message;
             console.log(errorCode + ": " + errorMessage);
             circle.addClass("hide");
+            loginErrorText.removeClass("hide");
             window.location.href = 'login.html';
         });
 
     };
-}
+}]);
 
-function logsController($scope)
-{
+app.controller('logsController', ["$scope", 'userService', function($scope, userService, $location){
     var logs = $scope;
 
     var selectedDate;
-    console.log("main level");
+    var date_text = $("#date-text");
 
     $('.datepicker').pickadate({
         selectMonths: true, // Creates a dropdown to control month
@@ -171,48 +207,66 @@ function logsController($scope)
         today: 'Today',
         clear: 'Clear',
         close: 'Ok',
-        closeOnSelect: false, // Close upon selecting a date,
+        closeOnSelect: true, // Close upon selecting a date,
         onClose: function()
         {
             // console.log(this.get('select', 'yyyy-mm-dd'));
             selectedDate = this.get('select', 'yyyy-mm-dd');
+            date_text.html("<b>Showing history for " + selectedDate + "</b>");
+            retrieveList(selectedDate);
         }
     });
-
-    logs.loglist =
-        [
+    //temp var for testing
+    logs.loglist = [];
+    tempList = [];
+    var userID = localStorage.getItem("userid");
+    console.log("Logs, UserID = " + userID);
+    function retrieveList(date) {
+        $scope.$apply(function () {logs.loglist=[];});
+        tempList=[];
+        firebaseApp.database().ref(userID + "/logs/" + date + "/").once('value').then(function(snapshot) {
+            var list = snapshot.val();
+            for(var key in list)
             {
-                "lockStatus" : 0,
-                "lock_time" : "2017-07-15 21:50:15"
-            },
-            {
-                "lockStatus" : 1,
-                "lock_time" : "2017-08-13 11:50:15"
+                if (list.hasOwnProperty(key)) {
+                    var object = {};
+                    object["lockStatus"] = list[key];
+                    object["lock_time"] = key;
+                    tempList.push(object);
+                }
             }
-        ];
+            display_list();
 
-    for (var i = 0; i<logs.loglist.length; i++)
-    {
-        var obj = logs.loglist[i];
-        console.log("hfrugf");
-
-        if(obj.lockStatus == 0)
-        {
-            obj["lock_icon"] = "lock_outline";
-            obj["lock_title"] = "Locked";
-            obj["color"] = "material-icons circle red"
-        }
-        else
-        {
-            obj["lock_icon"] = "lock_open";
-            obj["lock_title"] = "Unlocked";
-            obj["color"] = "material-icons circle green"
-        }
-
-        // $scope.$apply(function ()
-        // {
-        // });
-
-        console.log(obj);
+        });
     }
-}
+    function display_list() {
+        for(var i=0;i<tempList.length;i++)
+        {
+            var obj = tempList[i];
+            if(obj["lockStatus"] === 0)
+            {
+                object = {};
+                object["lockStatus"] = 0;
+                object["lock_time"] = obj["lock_time"];
+                object["lock_icon"] = "lock_outline";
+                object["lock_title"] = "Locked";
+                object["color"] = "material-icons circle red";
+                $scope.$apply(function () {
+                    logs.loglist.push(object);
+                });
+            }
+            else
+            {
+                object = {};
+                object["lockStatus"] = 1;
+                object["lock_time"] = obj["lock_time"];
+                object["lock_icon"] = "lock_open";
+                object["lock_title"] = "Unlocked";
+                object["color"] = "material-icons circle green";
+                $scope.$apply(function () {
+                    logs.loglist.push(object);
+                });
+            }//end else
+        }//end for
+    }//end function
+}]);
