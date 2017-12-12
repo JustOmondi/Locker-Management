@@ -181,6 +181,8 @@ function logsController($scope)
     tempList = [];
     var userID = 'PCWsFlrZqWPPnUACRDm4MFe5Zk13';
     function retrieveList(date) {
+        $scope.$apply(function () {logs.loglist=[];});
+        tempList=[];
         firebase.database().ref(userID + "/logs/" + date + "/").once('value').then(function(snapshot) {
             var list = snapshot.val();
             for(var key in list)
