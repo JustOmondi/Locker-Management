@@ -77,6 +77,7 @@ function lockController($scope)
             lockIcon.html("lock_outline");
             lock_status_text.html("Your locker is locked");
             //console.log("lalal " + lockIcon.html());
+            locker.generateLog(1);
         }
         else if(lockStatus == 0)
         {
@@ -91,6 +92,7 @@ function lockController($scope)
             lockIcon.html("lock_open");
             lock_status_text.html("Your locker is unlocked");
             //console.log("old html = " + lockButton.html());
+            locker.generateLog(0);
 
         }
     };
@@ -150,6 +152,49 @@ function lockController($scope)
             circle.addClass("hide");
             window.location.href = 'login.html';
         });
+
+    };
+    
+    locker.generateLog = function(lockStatus)
+    {
+        var date = new Date();
+        var month = date.getMonth()+1;
+        var year = date.getFullYear();
+        var day = date.getDate();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        var sec = date.getSeconds();
+
+        if(hour < 10)
+        {
+            hour = "0"+hour;
+        }
+        if(min < 10)
+        {
+            min = "0"+min;
+        }
+        if(sec < 10)
+        {
+            sec = "0"+sec;
+        }
+        if(month < 10)
+        {
+            month = "0"+month;
+        }
+        if(day < 10)
+        {
+            day = "0"+day;
+        }
+
+        var dateString = year+"-"+month+"-"+day;
+        var timeString = hour+":"+min+":"+sec;
+
+        var userid = "PCWsFlrZqWPPnUACRDm4MFe5Zk13";
+        console.log(userid);
+
+        var updates = {};
+        updates["/logs/"+dateString+"/"+timeString] = lockStatus;
+        database.ref(userid).update(updates);
 
     };
 }
