@@ -142,7 +142,7 @@ app.controller('loginController', ["$scope", 'userService', "$location", functio
 
     // Initialize Firebase app
     var firebaseApp = firebase.initializeApp(config);
-
+    var database = firebaseApp.database();
     login.emailSignUp = function () {
         var confirm_password = document.getElementById("password_field_confirm");
         console.log(email.value + " " + password.value);
@@ -157,6 +157,7 @@ app.controller('loginController', ["$scope", 'userService', "$location", functio
                 userService.setUser(result);
                 circle.addClass("hide");
                 localStorage.setItem("userid", result.uid);
+                database.ref("Users/"+result.uid).update({"Unlocked": 0});
                 window.location.href = 'home.html';
             }).catch(function (error) {
                 // Handle Errors here.
@@ -306,4 +307,4 @@ app.controller('logsController', ["$scope", 'userService', function($scope, user
         }
     }
 
-}
+}]);
