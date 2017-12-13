@@ -41,7 +41,7 @@ app.service('userService', function(){
 
 app.controller('lockController', ["$scope", 'userService', function($scope, userService, $location){
     var login = $scope;
-    var unlocked = -1;//initially -1 as we still need to get the current status from Firebase
+    var lockStatus = -1;//initially -1 as we still need to get the current status from Firebase
 
     login.buttonIcon = "";
 
@@ -51,26 +51,53 @@ app.controller('lockController', ["$scope", 'userService', function($scope, user
     var currentUserID = localStorage.getItem("userid");
 
     database.ref("Users/"+currentUserID).on('value', function (snapshot) {
-        unlocked = snapshot.val().Unlocked;
-        if (unlocked == 1) {
-            // lockButton.empty();
-            lockButton.removeClass('grey');
-            lockButton.removeClass('green');
-            lockButton.addClass('red');
-            lockButton.html('Lock');
-            lockIcon.html("lock_open");
-            lock_status_text.html("Your locker is unlocked");
+        lockStatus = snapshot.val().lockStatus;
 
-        }
-        // Unlocked
-        else if (unlocked == 0) {
+        //0 indicates locker is locked
+        if (lockStatus === 0) {
             lockButton.removeClass('grey');
             lockButton.removeClass('red');
             lockButton.addClass('green');
+            lockButton.removeClass("disabled");
             lockButton.html('Unlock');
             lockIcon.html("lock_outline");
             lock_status_text.html("Your locker is locked");
+            login.generateLog(0);
         }
+        //1 indicates locker is attempting to lock
+        else if (lockStatus === 1) {
+            // lockButton.empty();
+            lockButton.removeClass('red');
+            lockButton.removeClass('green');
+            lockButton.addClass('grey');
+            lockButton.addClass('disabled');
+            lockButton.html('Locking');
+            lockIcon.html("loop");
+            lock_status_text.html("Attempting to lock");
+        }
+        //2 indicates locker is attempting to unlock
+        else if (lockStatus === 2) {
+            // lockButton.empty();
+            lockButton.removeClass('red');
+            lockButton.removeClass('green');
+            lockButton.addClass('grey');
+            lockButton.addClass('disabled');
+            lockButton.html('Unlocking');
+            lockIcon.html("loop");
+            lock_status_text.html("Attempting to unlock");
+        }
+        //3 indicates locker is unlocked
+        else if (lockStatus === 3) {
+            lockButton.removeClass('grey');
+            lockButton.removeClass('green');
+            lockButton.addClass('red');
+            lockButton.removeClass('disabled');
+            lockButton.html('Unlock');
+            lockIcon.html("lock_outline");
+            lock_status_text.html("Your locker is locked");
+            login.generateLog(3);
+        }
+
     });
 
     //Function to create a timestamp when lockStatus is changed.
@@ -102,41 +129,40 @@ app.controller('lockController', ["$scope", 'userService', function($scope, user
     };
     // Update lock status
     login.lockUnlock = function () {
-        if (unlocked === 1) {
+        if (lockStatus === 0) {
             //Add changes to update list and push to database
-            login.pushChanges('lock', 0);
+            login.pushChanges('lock', 2);
 
             //UI changes
             lockButton.removeClass('red');
             lockButton.addClass('green');
-            lockButton.text('Unlock');
-
-            lockIcon.html("lock_outline");
-            lock_status_text.html("Your locker is locked");
+            lockButton.addClass('disabled');
+            lockButton.text('Unlocking');
+            lockIcon.html("loop");
+            lock_status_text.html("Attempting to unlock");
             //console.log("lalal " + lockIcon.html());
-            login.generateLog(1);
+
         }
-        else if (unlocked === 0) {
+        else if (lockStatus === 3) {
             //Lock
             login.pushChanges('lock', 1);
 
             //UI changes
             lockButton.removeClass('green');
-            lockButton.addClass('red');
-            lockButton.text('Lock');
-
-            lockIcon.html("lock_open");
-            lock_status_text.html("Your locker is unlocked");
-            login.generateLog(0);
+            lockButton.addClass('grey');
+            lockButton.addClass('disabled');
+            lockButton.text('Locking');
+            lockIcon.html("loop");
+            lock_status_text.html("Attempting to lock");
         }
     };
 
     //push a list of updates to database
     login.pushChanges = function (lock_key, value) {
         var updates = {};
-        updates["/Unlocked"] = value;
+        updates["/lockStatus"] = value;
         var uID = localStorage.getItem("userid");
-        database.ref("Users/"+uID).update(updates);
+        database.ref("Users/"+uID).update(updates);//pushing to "Users/[userID]/lockStatus
     }
 }]);
 
@@ -204,6 +230,21 @@ app.controller('logsController', ["$scope", 'userService', function($scope, user
     var selectedDate;
     var date_text = $("#date-text");
 
+    /*
+    function showCalendar() {
+        console.log("hello debug");
+        var $input = $('.datepicker').pickadate();
+        var picker = $input.pickadate('picker');
+        picker.on('open', function() {
+            console.log('Opened.. and here I am!');
+        })
+        $('button').on('click', function(event) {
+            event.stopPropagation();
+            picker.open();
+        });
+    }
+    */
+
     $('.datepicker').pickadate({
         selectMonths: true, // Creates a dropdown to control month
         selectYears: 15, // Creates a dropdown of 15 years to control year,
@@ -258,10 +299,10 @@ app.controller('logsController', ["$scope", 'userService', function($scope, user
                     logs.loglist.push(object);
                 });
             }
-            else
+            else if(obj["lockStatus"]===3)
             {
                 object = {};
-                object["lockStatus"] = 1;
+                object["lockStatus"] = 3;
                 object["lock_time"] = obj["lock_time"];
                 object["lock_icon"] = "lock_open";
                 object["lock_title"] = "Unlocked";
