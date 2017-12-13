@@ -9,7 +9,7 @@ var pythonUnlockCode = pythonLockDir + ' 1';
 // Shell string compiling for the led python script
 var ledDir = '/home/pi/piServer/led.py'
 var onLed = ledDir + ' 1'
-var blinkLed = ledDir + ' 2 &&'
+var blinkLed = ledDir + ' 2'
 var offLed = ledDir + ' 3'
 
 // Authenticating into firebase database
