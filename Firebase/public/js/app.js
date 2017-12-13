@@ -230,8 +230,8 @@ app.controller('logsController', ["$scope", 'userService', function($scope, user
     var selectedDate;
     var date_text = $("#date-text");
 
-    /*
-    function showCalendar() {
+
+    logs.showCalender = function () {
         console.log("hello debug");
         var $input = $('.datepicker').pickadate();
         var picker = $input.pickadate('picker');
@@ -243,7 +243,6 @@ app.controller('logsController', ["$scope", 'userService', function($scope, user
             picker.open();
         });
     }
-    */
 
     $('.datepicker').pickadate({
         selectMonths: true, // Creates a dropdown to control month
@@ -251,7 +250,7 @@ app.controller('logsController', ["$scope", 'userService', function($scope, user
         today: 'Today',
         clear: 'Clear',
         close: 'Ok',
-        closeOnSelect: true, // Close upon selecting a date,
+        closeOnSelect: false, // Close upon selecting a date,
         onClose: function()
         {
             // console.log(this.get('select', 'yyyy-mm-dd'));

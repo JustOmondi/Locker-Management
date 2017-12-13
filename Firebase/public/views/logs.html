@@ -60,40 +60,38 @@
 
 <main>
     <body ng-app = "PiLock">
-    <div  class="grey lighten-4" ng-controller="logsController" >
-        <!--Date selector-->
-        <div class="row center">
-            <div class="col s12 m6 l4 offset-m3 offset-l4">
-                <h4 class="header center orange-text">History</h4>
-                <br><br>
-                <label for="calendar"><b class="black-text">Click here to choose a date</b></label>
-                <input id ="calendar" type="text" class="datepicker">
+    <div ng-controller="logsController">
+        <div>
+            <!--Date selector-->
+            <div class="row center">
+                <div class="col s12 m6 l4 offset-m3 offset-l4">
+                    <h4 class="header center orange-text">History</h4>
+                    <br><br>
+                    <button id="date-button" class="btn-floating btn-large orange tooltipped z-depth-3"
+                     data-position="top" data-delay="50" data-tooltip="Click the button to choose a date" ng-click="showCalender()">
+                        <i class="large material-icons white-text">date_range</i>
+                    </button>
+                    <br><br>
+                    <input id ="calendar" type="text" class="datepicker">
 
+                </div>
             </div>
-        </div>
-        <div class="row" >
-            <div class="col s12 m6 l6 offset-l3 offset-m3">
-                <ul class="collection with-header z-depth-3" >
-                    <li class="collection-header grey lighten-2"><h6 id="date-text" class="orange-text"><b>Choose a date</b></h6></li>
-                    <li class="collection-item avatar" ng-repeat ="log in loglist" >
-                        <i class={{log.color}}>{{log.lock_icon}}</i>
-                        <span class="title">{{log.lock_time}}</span>
-                        <p>{{log.lock_title}}</p>
-                    </li>
-                </ul>
+            <div class="row" >
+                <div class="col s12 m6 l6 offset-l3 offset-m3">
+                    <ul class="collection with-header z-depth-3" >
+                        <li class="collection-header grey lighten-2"><h6 id="date-text" class="orange-text"><b>Please select a date first.</b></h6></li>
+                        <li class="collection-item avatar" ng-repeat ="log in loglist" >
+                            <i class={{log.color}}>{{log.lock_icon}}</i>
+                            <span class="title">{{log.lock_time}}</span>
+                            <p>{{log.lock_title}}</p>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        <br><br>
-    </div>
-    <!-- Button to activate calendar
-    <div class="row" ng-controller="logsController">
-        <div class="fixed-action-btn horizontal">
-            <button class="btn-floating btn-large red" ng-click="showCalendar()">
-                <i class="large material-icons">mode_edit</i>
-            </button>
+            <br><br>
         </div>
     </div>
-    -->
+
 
     <!--  Scripts-->
 
