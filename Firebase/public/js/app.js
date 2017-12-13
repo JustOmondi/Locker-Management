@@ -41,7 +41,7 @@ app.service('userService', function(){
 
 app.controller('lockController', ["$scope", 'userService', function($scope, userService, $location){
     var login = $scope;
-    var lockStatus = -1;//initially -1 as we still need to get the current status from Firebase
+    var unlocked = -1;//initially -1 as we still need to get the current status from Firebase
 
     login.buttonIcon = "";
 
@@ -50,9 +50,9 @@ app.controller('lockController', ["$scope", 'userService', function($scope, user
     var lock_status_text = $("#lock-status-text");
     var currentUserID = localStorage.getItem("userid");
 
-    database.ref(currentUserID).on('value', function (snapshot) {
-        lockStatus = snapshot.val().lockStatus;
-        if (lockStatus == 1) {
+    database.ref("Users/"+currentUserID).on('value', function (snapshot) {
+        unlocked = snapshot.val().Unlocked;
+        if (unlocked == 1) {
             // lockButton.empty();
             lockButton.removeClass('grey');
             lockButton.removeClass('green');
@@ -63,7 +63,7 @@ app.controller('lockController', ["$scope", 'userService', function($scope, user
 
         }
         // Unlocked
-        else if (lockStatus == 0) {
+        else if (unlocked == 0) {
             lockButton.removeClass('grey');
             lockButton.removeClass('red');
             lockButton.addClass('green');
@@ -97,12 +97,12 @@ app.controller('lockController', ["$scope", 'userService', function($scope, user
 
         var updates = {};
         updates["/logs/"+dateString+"/"+timeString] = lockStatus;
-        database.ref(userid).update(updates);
+        database.ref("Users/"+userid).update(updates);
 
     };
     // Update lock status
     login.lockUnlock = function () {
-        if (lockStatus == 1) {
+        if (unlocked === 1) {
             //Add changes to update list and push to database
             login.pushChanges('lock', 0);
 
@@ -116,7 +116,7 @@ app.controller('lockController', ["$scope", 'userService', function($scope, user
             //console.log("lalal " + lockIcon.html());
             login.generateLog(1);
         }
-        else if (lockStatus == 0) {
+        else if (unlocked === 0) {
             //Lock
             login.pushChanges('lock', 1);
 
@@ -134,9 +134,9 @@ app.controller('lockController', ["$scope", 'userService', function($scope, user
     //push a list of updates to database
     login.pushChanges = function (lock_key, value) {
         var updates = {};
-        updates["/lockStatus"] = value;
+        updates["/Unlocked"] = value;
         var uID = localStorage.getItem("userid");
-        database.ref(uID).update(updates);
+        database.ref("Users/"+uID).update(updates);
     }
 }]);
 
@@ -227,7 +227,7 @@ app.controller('logsController', ["$scope", 'userService', function($scope, user
     function retrieveList(date) {
         $scope.$apply(function () {logs.loglist=[];});
         tempList=[];
-        firebaseApp.database().ref(userID + "/logs/" + date + "/").once('value').then(function(snapshot) {
+        firebaseApp.database().ref("Users/"+userID + "/logs/" + date + "/").once('value').then(function(snapshot) {
             var list = snapshot.val();
             for(var key in list)
             {
