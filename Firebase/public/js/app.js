@@ -157,11 +157,14 @@ app.controller('loginController', ["$scope", 'userService', "$location", functio
             console.log(password_error.html());
         } else {
             firebaseApp.auth().createUserWithEmailAndPassword(email.value, password.value).then(function (result) {
-                console.log("Signed in");
+                console.log("Signed up");
                 userService.setUser(result);
                 circle.addClass("hide");
                 localStorage.setItem("userid", result.uid);
-                database.ref("Users/"+result.uid).update({"Unlocked": 0});
+                database.ref("Users/"+result.uid).set({"Unlocked": 0});
+                firebase.database().ref('Users/'+result.uid).once('value').then(function(snapshot){
+                    console.log(snapshot.val());
+                });
                 window.location.href = 'home.html';
             }).catch(function (error) {
                 // Handle Errors here.
