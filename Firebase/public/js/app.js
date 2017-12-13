@@ -161,7 +161,7 @@ app.controller('loginController', ["$scope", 'userService', "$location", functio
                 userService.setUser(result);
                 circle.addClass("hide");
                 localStorage.setItem("userid", result.uid);
-                database.ref("Users/"+result.uid).update({"Unlocked": 0});
+                database.ref(result.uid).set({"lockStatus": 0});//create a new user with lockStatus set to 0.
                 window.location.href = 'home.html';
             }).catch(function (error) {
                 // Handle Errors here.
