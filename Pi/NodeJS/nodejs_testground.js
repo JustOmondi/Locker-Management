@@ -1,6 +1,6 @@
 // Authenticating into firebase database
 var admin = require("firebase-admin");
-var serviceAccount = require("/home/pi/piServer/serviceAccountKey.json");
+var serviceAccount = require("/home/alienadmin/Desktop/Locker-Management/Pi/NodeJS/serviceAccountKey.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://locker-management-1be92.firebaseio.com"
@@ -9,59 +9,60 @@ admin.initializeApp({
 // Connecting to fiebase database and obtaining references
 var db = admin.database();
 var ref = db.ref("/");
-var usersRef = db.ref("/testZone/users/")
+var usersRef = db.ref("/Users/")
 var locksRef = db.ref("/testZone/locks/")
 
 // The lock queue
 var lockQueue = ["lock3", "lock4", "lock5", "lock6"];
 // Local Database
+// var localDatabase = {
+//   "locks": [{
+//       "userID": "user0",
+//       "lockID": "lock0",
+//       "lockStatus": "0"
+//     }
+//   ]
+// };
 var localDatabase = {
-  "locks": [{
-      "userID": "user0",
-      "lockID": "lock0",
-      "unlocked": "0"
-    },
-    {
-      "userID": "user1",
-      "lockID": "lock1",
-      "unlocked": "0"
-    },
-    {
-      "userID": "user2",
-      "lockID": "lock2",
-      "unlocked": "0"
-    }
-  ]
+  "locks": []
 };
 
 // Function that's called upon a user change
 usersRef.on("child_added", function(snapshot, prevChildKey) {
   var newUser = snapshot.val();
+
+  console.log("Entry added = userID:" + snapshot.key);
+
   if (lockQueue.length > 0) {
     localDatabase.locks.push({
       "userID": snapshot.key,
       "lockID": lockQueue.shift(),
-      "unlocked": 0
+      "lockStatus": 0
     });
   } else {
     localDatabase.locks.push({
       "userID": snapshot.key,
       "lockID": "null",
-      "unlocked": 0
+      "lockStatus": 0
     });
   }
+
+  console.log("Flushing entry to firebase")
+  flushEntry(localDatabase.locks[localDatabase.locks.length - 1]);
+
 });
 
 // Monitor for changes in users, push lock updates to locks
-usersRef.on("child_changed", function(snap) {
-  var changedUser = snap.val();
+usersRef.on("child_changed", function(snapshot) {
+  var changedUser = snapshot.val();
 
   console.log("User change detected");
-  console.log("Searching local database for: " + changedUser.userID);
+  console.log("Searching local database for: " + snapshot.key);
 
   // Find entry in local database
-  var result = findDatabaseIndex(changedUser.userID);
-  if (result > 0) {
+  var result = findDatabaseIndex(snapshot.key);
+  if (result >= 0) {
+    console.log("Entry found at index: " + result)
     var localDBEntry = localDatabase.locks[result];
 
     // Test if lockID changed
@@ -71,47 +72,58 @@ usersRef.on("child_changed", function(snap) {
       localDBEntry.lockID = "null";
     }
     // Test if lock status changed
-    if (changedUser.unlocked != localDBEntry.unlocked) {
-      console.log("Lock status change detected, new state: " + changedUser.unlocked);
-      localDatabase.locks[i].unlocked = changedUser.unlocked;
+    if (changedUser.lockStatus != localDBEntry.lockStatus) {
+      console.log("Lock status change detected, new state: " + changedUser.lockStatus);
+
+      // Change lock and modify status on server
+      if (changedUser.lockStatus == 1) {
+        localDatabase.locks[result].lockStatus = 0;
+      } else if (changedUser.lockStatus == 2) {
+        localDatabase.locks[result].lockStatus = 3;
+      } else {
+        console.log("Lock state error detected");
+      }
+      flushEntry(localDatabase.locks[result]);
     }
 
   } else { // User not found
-    console.log(changedUser.userID + " not found in localDatabase");
+    console.log(snapshot.key + " not found in localDatabase");
   }
 });
 
 // Flushes an localDBEntry to the firebase database
 function flushEntry(userData) {
+
+  console.log("Uploading: " + JSON.stringify(userData));
   // Selecting reference to entry being modified
-  userRef = db.ref("/users/" + userData.userID);
+  userRef = db.ref("/Users/" + userData.userID);
 
   // Compiling data to be sent
-  var subData = []
-  subData["/lockID"] = userData.lockID;
-  subData["/unlocked"] = userData.unlocked;
-
+  userRef.update({
+    "lockID": userData.lockID,
+    "lockStatus": userData.lockStatus
+  });
   // Sending data
-  userRef.update(subData);
 }
 
 // Flushed
 function flushData() {
-
   // Flushing to the users subtree database
   for (i in localDatabase.locks) {
-    userRef = db.ref("/users/" + localDatabase.locks[i].userID);
+    userRef = db.ref("/Users/" + localDatabase.locks[i].userID);
 
-    var subData = []
-    subData["/lockID"] = localDatabase.locks[i].lockID;
-    subData["/unlocked"] = localDatabase.locks[i].unlocked;
-    userRef.update(subData);
+    userRef.update({
+      "lockID": localDatabase.locks[i].lockID,
+      "lockStatus": localDatabase.locks[i].lockStatus
+    });
   }
 }
 
 // Searches for the index in localDB which contains given userID
 function findDatabaseIndex(searchVal) {
   for (var i = 0; i < localDatabase.locks.length; i++) {
+    console.log("Comparing")
+    console.log(searchVal + " :: " + localDatabase.locks[i].userID);
     if (localDatabase.locks[i].userID == searchVal) {
       return i;
     }
@@ -119,5 +131,17 @@ function findDatabaseIndex(searchVal) {
   return -1;
 }
 
+function runTests() {
+  console.log("Starting tests");
+  console.log("Pulling database")
+  print_local_db();
+}
+
+function print_local_db() {
+  console.log(JSON.stringify(localDatabase));
+}
+
 // Indicates parsing of javascript file
 console.log("nodejs_testground.js loaded");
+
+runTests();
