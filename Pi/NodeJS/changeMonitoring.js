@@ -26,17 +26,11 @@ var onLed = ledDir + ' 1'
 var blinkLed = ledDir + ' 2'
 var offLed = ledDir + ' 3'
 
-// The lock queue
-var lockQueue = ["lock3", "lock4", "lock5", "lock6"];
-// Local Database
+// Local Database Entry Example
 // var localDatabase = {
-//   "locks": [{
-//       "userID": "user0",
-//       "lockID": "lock0",
-//       "lockStatus": "0"
-//     }
-//   ]
+//   "locks": [{"userID": "user0", "lockID": "lock0", "lockStatus": "0"}]
 // };
+var lockQueue = ["lock0", "lock1", "lock2", "lock3", "lock4", "lock5", "lock6"];
 var localDatabase = {
   "locks": []
 };
@@ -47,23 +41,20 @@ usersRef.on("child_added", function(snapshot, prevChildKey) {
 
   console.log("Entry added = userID:" + snapshot.key);
 
+  // Create entry for localDB
+  var lockName = "null";
   if (lockQueue.length > 0) {
-    localDatabase.locks.push({
-      "userID": snapshot.key,
-      "lockID": lockQueue.shift(),
-      "lockStatus": 0
-    });
-  } else {
-    localDatabase.locks.push({
-      "userID": snapshot.key,
-      "lockID": "null",
-      "lockStatus": 0
-    });
+    lockName = lockQueue.shift();
   }
+  localDatabase.locks.push({
+    "userID": snapshot.key,
+    "lockID": lockName,
+    "lockStatus": 0
+  });
 
   console.log("Flushing entry to firebase")
+  // Flushes newly created entry
   flushEntry(localDatabase.locks[localDatabase.locks.length - 1]);
-
 });
 
 // Monitor for changes in users, push lock updates to locks
@@ -75,15 +66,20 @@ usersRef.on("child_changed", function(snapshot) {
 
   // Find entry in local database
   var result = findDatabaseIndex(snapshot.key);
+  console.log("Entry found at index: " + result)
   if (result >= 0) {
-    console.log("Entry found at index: " + result)
     var localDBEntry = localDatabase.locks[result];
 
     // Test if lockID changed - Future function
     if (changedUser.lockID != localDBEntry.lockID) {
-      console.log("LockID changed from " + localDBEntry.lockID + " to " + changedUser.lockID);
-      lockQueue.push(localDBEntry.lockID);
-      localDBEntry.lockID = "null";
+
+      if (changedUser.lockID == "null") {
+        console.log("LockID changed from " + localDBEntry.lockID + " to " + changedUser.lockID);
+        lockQueue.push(localDBEntry.lockID);
+        localDBEntry.lockID = "null";
+      } else if (changedUser.lockID == "req") {
+
+      }
     }
     // Test if lock status changed
     if (changedUser.lockStatus != localDBEntry.lockStatus) {
@@ -92,12 +88,13 @@ usersRef.on("child_changed", function(snapshot) {
       // Change lock and modify status on server
       if (changedUser.lockStatus == 1) {
         localDatabase.locks[result].lockStatus = 0;
+        flushEntry(localDatabase.locks[result]);
       } else if (changedUser.lockStatus == 2) {
         localDatabase.locks[result].lockStatus = 3;
+        flushEntry(localDatabase.locks[result]);
       } else {
         console.log("Lock state error detected");
       }
-      flushEntry(localDatabase.locks[result]);
     }
 
   } else { // User not found
