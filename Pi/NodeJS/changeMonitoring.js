@@ -10,18 +10,18 @@ admin.initializeApp({
 var db = admin.database();
 var ref = db.ref("/");
 var usersRef = db.ref("/Users/")
-var locksRef = db.ref("/testZone/locks/")
 
 // Variables for shell execution
 var shell = require('shelljs');
+var pythonDir = '/home/pi/piServer/python/'
 
 // Shell string compiling for python motor script
-var pythonLockDir = '/home/pi/piServer/header.py'
+var pythonLockDir = pythonDir + 'header.py'
 var pythonLockCode = pythonLockDir + ' 0';
 var pythonUnlockCode = pythonLockDir + ' 1';
 
 // Shell string compiling for the led python script
-var ledDir = '/home/pi/piServer/led.py'
+var ledDir = pythonDir + 'led.py'
 var onLed = ledDir + ' 1'
 var blinkLed = ledDir + ' 2'
 var offLed = ledDir + ' 3'
@@ -73,12 +73,20 @@ usersRef.on("child_changed", function(snapshot) {
     // Test if lockID changed - Future function
     if (changedUser.lockID != localDBEntry.lockID) {
 
+      console.log("LockID changed from " + localDBEntry.lockID + " to " + changedUser.lockID);
+
+      // Release lock into queue
       if (changedUser.lockID == "null") {
-        console.log("LockID changed from " + localDBEntry.lockID + " to " + changedUser.lockID);
         lockQueue.push(localDBEntry.lockID);
         localDBEntry.lockID = "null";
-      } else if (changedUser.lockID == "req") {
 
+        // Request new lock from queue
+      } else if (changedUser.lockID == "req") {
+        var lockName = "null";
+        if (lockQueue.length > 0) {
+          lockName = lockQueue.shift();
+        }
+        localDBEntry.lockID = lockName;
       }
     }
     // Test if lock status changed
@@ -96,7 +104,6 @@ usersRef.on("child_changed", function(snapshot) {
         console.log("Lock state error detected");
       }
     }
-
   } else { // User not found
     console.log(snapshot.key + " not found in localDatabase");
   }
