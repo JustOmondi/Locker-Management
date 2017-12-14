@@ -1,6 +1,6 @@
 // Authenticating into firebase database
 var admin = require("firebase-admin");
-var serviceAccount = require("/home/alienadmin/Desktop/Locker-Management/Pi/NodeJS/serviceAccountKey.json");
+var serviceAccount = require("/home/pi/piServer/serviceAccountKey.json");
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://locker-management-1be92.firebaseio.com"
@@ -17,8 +17,8 @@ var pythonDir = '/home/pi/piServer/python/'
 
 // Shell string compiling for python motor script
 var pythonLockDir = pythonDir + 'header.py'
-var pythonLockCode = pythonLockDir + ' 0';
-var pythonUnlockCode = pythonLockDir + ' 1';
+var pythonLockCode = pythonLockDir + ' 0 ';
+var pythonUnlockCode = pythonLockDir + ' 1 ';
 
 // Shell string compiling for the led python script
 var ledDir = pythonDir + 'led.py'
@@ -96,9 +96,15 @@ usersRef.on("child_changed", function(snapshot) {
       // Change lock and modify status on server
       if (changedUser.lockStatus == 1) {
         localDatabase.locks[result].lockStatus = 0;
+        if (shell.exec(pythonLockCode + localDatabase.locks[result].lockID).code !== 0) {
+          console.log('Lock python error');
+        }
         flushEntry(localDatabase.locks[result]);
       } else if (changedUser.lockStatus == 2) {
         localDatabase.locks[result].lockStatus = 3;
+        if (shell.exec(pythonUnlockCode + localDatabase.locks[result].lockID).code !== 0) {
+          console.log('Unlock python error');
+        }
         flushEntry(localDatabase.locks[result]);
       } else {
         console.log("Lock state error detected");
