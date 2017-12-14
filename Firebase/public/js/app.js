@@ -18,6 +18,15 @@ var database = firebaseApp.database();
 
 app.service('userService', function(){
     this.currentUser = { uid: ""};
+    this.buttonpressed = {button : false}
+
+    this.setPressed = function (value) {
+        this.buttonpressed.button = value;
+    };
+
+    this.getPressed = function () {
+        return this.buttonpressed.button;
+    };
 
     this.user = function(){
         return this.currentUser;
@@ -62,7 +71,10 @@ app.controller('lockController', ["$scope", 'userService', function($scope, user
             lockButton.html('Unlock');
             lockIcon.html("lock_outline");
             lock_status_text.html("Your locker is locked");
-            login.generateLog(0);
+            if (userService.getPressed()){
+                login.generateLog(0);
+                userService.setPressed(false);
+            }
         }
         //1 indicates locker is attempting to lock
         else if (lockStatus === 1) {
@@ -95,7 +107,10 @@ app.controller('lockController', ["$scope", 'userService', function($scope, user
             lockButton.html('Unlock');
             lockIcon.html("lock_outline");
             lock_status_text.html("Your locker is locked");
-            login.generateLog(3);
+            if (userService.getPressed()){
+                login.generateLog(3);
+                userService.setPressed(false);
+            }
         }
 
     });
@@ -129,6 +144,7 @@ app.controller('lockController', ["$scope", 'userService', function($scope, user
     };
     // Update lock status
     login.lockUnlock = function () {
+        userService.setPressed(true);
         if (lockStatus === 0) {
             //Add changes to update list and push to database
             login.pushChanges('lock', 2);
