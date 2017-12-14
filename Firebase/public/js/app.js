@@ -203,7 +203,7 @@ app.controller('loginController', ["$scope", 'userService', "$location", functio
                 userService.setUser(result);
                 circle.addClass("hide");
                 localStorage.setItem("userid", result.uid);
-                database.ref("Users/"+result.uid).set({"Unlocked": 0});
+                database.ref("Users/"+result.uid).set({"lockStatus": 0});
                 firebase.database().ref('Users/'+result.uid).once('value').then(function(snapshot){
                     console.log(snapshot.val());
                 });
