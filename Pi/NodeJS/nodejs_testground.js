@@ -46,7 +46,7 @@ usersRef.on("child_added", function(snapshot, prevChildKey) {
       "lockStatus": 0
     });
   }
-  
+
   console.log("Flushing entry to firebase")
   flushEntry(localDatabase.locks[localDatabase.locks.length - 1]);
 
@@ -99,15 +99,11 @@ function flushEntry(userData) {
   userRef = db.ref("/Users/" + userData.userID);
 
   // Compiling data to be sent
-  //var subData = []
-  //subData["/lockID"] = userData.lockID;
-  //subData["/lockStatus"] = userData.lockStatus;
   userRef.update({
-      "lockID":userData.lockID,
-      "lockStatus":userData.lockStatus
+    "lockID": userData.lockID,
+    "lockStatus": userData.lockStatus
   });
   // Sending data
-  //userRef.update(subData);
 }
 
 // Flushed
@@ -115,14 +111,10 @@ function flushData() {
   // Flushing to the users subtree database
   for (i in localDatabase.locks) {
     userRef = db.ref("/Users/" + localDatabase.locks[i].userID);
-    
-    //var subData = []
-    //subData["/lockID"] = localDatabase.locks[i].lockID;
-    //subData["/lockStatus"] = localDatabase.locks[i].lockStatus;
-    //userRef.update(subData);
+
     userRef.update({
-        "lockID":localDatabase.locks[i].lockID,
-        "lockStatus":localDatabase.locks[i].lockStatus
+      "lockID": localDatabase.locks[i].lockID,
+      "lockStatus": localDatabase.locks[i].lockStatus
     });
   }
 }
@@ -143,7 +135,6 @@ function runTests() {
   console.log("Starting tests");
   console.log("Pulling database")
   print_local_db();
-
 }
 
 function print_local_db() {
