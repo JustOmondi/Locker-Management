@@ -4,13 +4,13 @@ import sys
 import RPi.GPIO as GPIO
 from time import sleep
 
-#setup GPI0 pins
-##def setup():
+#initialise GPI0 pins
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(12,GPIO.OUT)
 pwm = GPIO.PWM(12,50)
 pwm.start(0)
+
 #This function changes the angle of the servo motor
 
 def SetAngle(duty):
@@ -21,6 +21,7 @@ def SetAngle(duty):
     GPIO.output(12, False)
     pwm.ChangeDutyCycle(0)
 
+#Lock and Unlock functions for servor motor.
 def Lock():
     SetAngle(10)
 
