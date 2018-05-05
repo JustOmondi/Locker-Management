@@ -7,9 +7,9 @@ The user can simply lock and unlock the locker remotely from anywhere in the wor
 
 ## Built With
 
-* [Firebase] (https://firebase.google.com/)- The web framework used
-* [Rasberry-Pi] (https://www.raspberrypi.org/)- CPU used for remote connections main control of system.
-* [Arduino] - (https://www.arduino.cc/) - controlling servor motor
+* [Firebase](https://firebase.google.com/) - The web framework used
+* [Rasberry-Pi](https://www.raspberrypi.org/) - CPU used for remote connections main control of system.
+* [Arduino](https://www.arduino.cc/) - controlling servor motor
 * Servor Motor - Protyping the remote lock
 
 ## Authors
